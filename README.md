@@ -16,4 +16,9 @@ thns{1} = read_curv(fullfile(getenv('SUBJECTS_DIR'),'bert','surf','lh.thickness'
 thns{2} = read_curv(fullfile(getenv('SUBJECTS_DIR'),'bert','surf','rh.thickness'));
 fsss_view(surfs, thns)
 ```
+See documentation for more information:
+```
+>>> doc fsss_view
+```
+
 (cc) Seung-Goo Kim
