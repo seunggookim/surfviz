@@ -10,11 +10,10 @@ Download/fetch the package and add all subdirectories to MATLAB path:
 
 ## Demo
 ```
-surfs = read_all_surfs('bert',getenv('SUBJECTS_DIR')); % Reading surfaces of FREESURFER's example subject "bert" assuming the evironmental variable $SUBJECT_DIR is set as $FREESURFER_HOME/subjects
+surfs = fsss_read_all_FS_surfs('bert',getenv('SUBJECTS_DIR')); % Reading surfaces of FREESURFER's example subject "bert" assuming the evironmental variable $SUBJECT_DIR is set as $FREESURFER_HOME/subjects
 thns = cell(1,2);
 thns{1} = read_curv(fullfile(getenv('SUBJECTS_DIR'),'bert','surf','lh.thickness')); % 'read_curv' is from FREESURFER MATLAB functions
 thns{2} = read_curv(fullfile(getenv('SUBJECTS_DIR'),'bert','surf','rh.thickness'));
-figure;
 fsss_view(surfs, thns)
 ```
 (cc) Seung-Goo Kim
