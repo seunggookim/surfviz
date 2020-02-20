@@ -47,7 +47,7 @@ else
  if ~isfield(cfg,'suptemp4'),   cfg.suptemp4=0;  end
  if ~isfield(cfg,'inflated'),   cfg.inflated=1;  end
  if ~isfield(cfg,'area'),       cfg.area=1;  end
- if ~isfield(cfg,'applyxfm'),   cfg.applyxfm=0;  end
+ if ~isfield(cfg,'applyxfm'),   cfg.applyxfm=0;  else, error('Applying transform not yet supported!'); end
 end
 if isfield(cfg,'suptemp1'), cfg.suptemp=cfg.suptemp1; end
 
@@ -606,21 +606,21 @@ if isfield(cfg,'smallmeshes')
  end
 end
 
-if cfg.applyxfm
- % coregistration from native to mni305 space
- fname_xfm = fullfile(subjects_dir,sesid,'mri','transforms','coreg_fsavg.xfm');
- fname_moving = fullfile(subjects_dir,sesid,'mri','brainmask.nii');
- if ~exist(fname_moving,'file')
-  myunix(['mri_convert ',fullfile(subjects_dir,sesid,'mri','brainmask.mgz'), ...
-   ' ',fname_moving]);
- end
- fname_fixed  = fullfile(subjects_dir,'fsaverage','mri','brain.nii');
- if ~exist(fname_fixed,'file')
-  myunix(['mri_convert ',fullfile(subjects_dir,'fsaverage','mri','brainmask.mgz'), ...
-   ' ',fname_fixed]);
- end
- coreg = myspm_coreg_est(fname_moving, fname_fixed, fname_xfm);
-end
+% if cfg.applyxfm
+%  % coregistration from native to mni305 space
+%  fname_xfm = fullfile(subjects_dir,sesid,'mri','transforms','coreg_fsavg.xfm');
+%  fname_moving = fullfile(subjects_dir,sesid,'mri','brainmask.nii');
+%  if ~exist(fname_moving,'file')
+%   myunix(['mri_convert ',fullfile(subjects_dir,sesid,'mri','brainmask.mgz'), ...
+%    ' ',fname_moving]);
+%  end
+%  fname_fixed  = fullfile(subjects_dir,'fsaverage','mri','brain.nii');
+%  if ~exist(fname_fixed,'file')
+%   myunix(['mri_convert ',fullfile(subjects_dir,'fsaverage','mri','brainmask.mgz'), ...
+%    ' ',fname_fixed]);
+%  end
+%  coreg = myspm_coreg_est(fname_moving, fname_fixed, fname_xfm);
+% end
 
 fieldnames={'PIAL','WHITE','INFL','SPHERE','MEAN','SMOOTHWM'};
 fieldnames_cfg={'pial','white','inflated','sphere','mean','smoothwm'};
