@@ -18,13 +18,13 @@ fsss_view(surfs, surfs.THNS)
 
 You can also set the surface to visualize, layout, and a threshold via `cfg` structure:
 ```Matlab
-cfg = struct('basesurf','PIAL','layout','1x2','thres',3);
+cfg = struct('basesurf','PIAL', 'layout','1x2', 'thres',3);
 fsss_view(surfs, surfs.THNS, cfg)
 ```
 ![](https://github.com/solleo/surfviz/blob/master/images/demo2.2.png)
 
 ... and some captions and colorschemes: 
-```
+```Matlab
 thns_z = {zscore(surfs.THNS{1}), zscore(surfs.THNS{2})};
 cfg = struct('basesurf','INFL', 'layout','2x2', 'thres',1, ...
   'colorbartitle','Rel. Ctx. Thns.', 'colorbarxlabel','Z-score', ...
