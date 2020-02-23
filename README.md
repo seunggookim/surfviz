@@ -4,12 +4,12 @@ MATLAB scripts for visualization of surface-mapped scalar values. Various FreeSu
 
 ## Install
 Download/fetch the package and add all subdirectories to MATLAB path:
-```
+```Matlab
 >>> addpath(genpath(DIRECTORY_WHERE_YOU_SAVED_FILES))
 ```
 
 ## Demo
-```
+```Matlab
 subdir = fullfile(getenv('FREESURFER_HOME'),'subjects'); % Find FREESURFER default subject directory
 surfs = fsss_read_all_FS_surfs('fsaverage',subdir); % Reading template surfaces & everything in the directory
 fsss_view(surfs, surfs.THNS)
@@ -17,7 +17,7 @@ fsss_view(surfs, surfs.THNS)
 ![](https://github.com/solleo/surfviz/blob/master/images/demo1.png)
 
 You can also set the surface to visualize, layout, and a threshold via `cfg` structure:
-```
+```Matlab
 cfg = struct('basesurf','PIAL','layout','1x2','thres',3);
 fsss_view(surfs, surfs.THNS, cfg)
 ```
@@ -34,13 +34,13 @@ fsss_view(surfs, thns_z, cfg)
 ![](https://github.com/solleo/surfviz/blob/master/images/demo4.3.png)
 
 ... finally you can create as many figures as you want without Matalb taking away your attention:
-```
+```Matlab
 fsss_view(surfs, surfs.THNS, struct('demo.png')) % Nothing pops up but it creates a PNG file _silently_
 ls('demo.png') % check the file was created!
 ```
 
 See documentation for more information:
-```
+```Matlab
 >>> doc fsss_view
 ```
 
