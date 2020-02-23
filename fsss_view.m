@@ -10,7 +10,7 @@ function [H, cfg] = fsss_view (surfs, data, cfg)
 % [INPUT]
 % surfs {1x2} freesurfer surfaces structure read by FSSS_READ_ALL_FS_SURF
 %
-% data  {1x2} cells contain a vector (vertex-mapped scalar data) for each 
+% data  {1x2} cells contain a vector (vertex-mapped scalar data) for each
 %             hemisphere. [NaN] will be displayed as transparent if openGL
 %             is available.
 %
@@ -54,7 +54,7 @@ function [H, cfg] = fsss_view (surfs, data, cfg)
 %   (.usetruncated) [1x1]  true | {false} for thresholded values
 %  .caxis     [1x2] default is determined by signs of values:
 %                   for positive values: [1%tile 99%tile]
-%                   for sigend values: [-/+max(99%tile of abs)] 
+%                   for sigend values: [-/+max(99%tile of abs)]
 %             alternatively, enter 'full' min/max of numerical values
 %  .thres     [1x1] | [1x2]  default=0 (no thresholding)
 %  .subthres  [1x1]  true | {false} - show subthreshold values with a=0.5
@@ -120,11 +120,10 @@ function [H, cfg] = fsss_view (surfs, data, cfg)
 
 
 %{
-:TODO:
-Style-schemes: "FSL" "FS" "unthres"
-
 :HISTORY:
 2019-12-17: removed "useparula" option from FSSS_VIEW and VIEW_SURFDATA
+2020-02-23: new color schemes: "brightspectral", "brightparula",
+"yellowblue"
 %}
 
 %% C O N F I G ============================================================
@@ -143,7 +142,7 @@ if ~isempty(getCurrentWorker)
   warning('Parallel workers: only Painter: force unthresholded maps')
   cfg.basesurf = 'WHITE';
   cfg.nobasesurf = true;
-%   if isfield(cfg,'thres'), cfg = rmfield(cfg, 'thres'); end
+  %   if isfield(cfg,'thres'), cfg = rmfield(cfg, 'thres'); end
 end
 
 %% -- SUPTEMP
@@ -167,6 +166,21 @@ if isfield(cfg,'colorscheme')
       cfg.colormap = parula(256);
       cfg.figurecolor = 'k';
       cfg.basecolor = 'dark';
+    case 'brightspectral'
+      cfg.colormap = flipud(brewermap(256,'spectral'));
+      cfg.figurecolor = 'w';
+      cfg.basecolor = 'bright';
+    case 'brightparula'
+      cfg.colormap = parula(256);
+      cfg.figurecolor = 'w';
+      cfg.basecolor = 'bright';
+    case 'yellowblue'
+      cfg.colormap = [
+        [linspace(0,0,64); linspace(1,0.25,64); linspace(1,1,64)]';
+        [linspace(1,1,64); linspace(0.25,1,64); linspace(0,0,64)]'];
+      cfg.figurecolor = 'k';
+      cfg.basecolor = 'dark';
+      %       cfg.usetruncated = true;
     otherwise
       warning('%s is not valid colorscheme. Ignored', cfg.colorscheme)
   end
@@ -248,7 +262,7 @@ if ~isfield(cfg,'figureposition')
     case '1x2'
       cfg.figureposition = [5   694   450   220];
     case '2x2'
-      cfg.figureposition = [5   694   900   793];
+      cfg.figureposition = [5   694   450   365];
     case {'1x2big','1x2oblq'}
       cfg.figureposition = [5   694   900   415];
     case '1x2stmp'
@@ -308,6 +322,63 @@ end
 %% -- Overlay values: integer or not?
 if ~isfield(cfg,'isinterger')
   cfg.isinteger = isequal(numvals, round(numvals));
+end
+
+%% -- Color map
+NUMCOLORLEVELS = 256;
+if ~isfield(cfg,'subthres')
+  cfg.subthres = 0;
+end
+if ~isfield(cfg,'colormap')
+  if isequal(cfg.thres, [0 0])
+    cfg.colormap = flipud(brewermap(NUMCOLORLEVELS,'spectral'));
+    cfg.figurecolor = 'w';
+    cfg.basecolor = 'bright';
+  else % thresholded
+    ind = linspace(cfg.caxis(1),cfg.caxis(2),NUMCOLORLEVELS);
+    NUMLEVELNEG = sum(ind <= cfg.thres(1));
+    NUMLEVELSUBTHR = sum(cfg.thres(1) < ind & ind < cfg.thres(2));
+    NUMLEVELPOS = sum(cfg.thres(2) <= ind);
+    cfg.colormap = [
+      flipud(sgcolormap('DBC3',NUMLEVELNEG));
+      0.35*ones(NUMLEVELSUBTHR,3);
+      sgcolormap('DRY',NUMLEVELPOS)];
+    cfg.figurecolor = 'k';
+    cfg.basecolor = 'dark';
+  end
+else
+  if ~isequal(cfg.thres, [0 0]) && (prod(cfg.caxis)<0)
+    % if thresholded & divergent:
+    givenmap = cfg.colormap;
+    NUMCOLORLEVELS = size(givenmap,1);
+    ind = linspace(cfg.caxis(1),cfg.caxis(2),NUMCOLORLEVELS);
+    NUMLEVELNEG = sum(ind <= cfg.thres(1));
+    NUMLEVELSUBTHR = sum(cfg.thres(1) < ind & ind < cfg.thres(2));
+    NUMLEVELPOS = sum(cfg.thres(2) <= ind);
+    cfg.colormap = [
+      givenmap(1:NUMLEVELNEG,:);
+      0.35*ones(NUMLEVELSUBTHR,3);
+      givenmap(end-NUMLEVELPOS+1:end,:)];
+  end
+  
+  if ~isfield(cfg,'figurecolor')
+    cfg.figurecolor = 'w';
+  end
+  if ~isfield(cfg,'basecolor')
+    cfg.basecolor = 'bright';
+  end
+end
+switch cfg.basecolor
+  case 'dark'
+    cfg.basecolormap = [.15 .15 .15; .35 .35 .35];
+  case 'bright'
+    cfg.basecolormap = [.6 .6 .6; .8 .8 .8];
+end
+if cfg.subthres
+  cfg.basecolormap = [.7 .7 .7; .9 .9 .9];
+  cfg.colormap = flipud(brewermap(NUMCOLORLEVELS,'spectral'));
+  cfg.facealpha = 0.6;
+  cfg.figurecolor = 'k';
 end
 
 %% -- Initialize figure
@@ -394,7 +465,8 @@ for hemi = 1:2
     end
     xi = 0.5 * (edges(1:end-1) + edges(2:end)); % center value of bins
   else
-    [ci, xi] = hist(numvals, numbins);
+    [ci, xi] = hist(numvals, numbins); % for this particular case,
+    % HIST works better than HISTOGRAM.
   end
   
   % color-code bars:
@@ -525,7 +597,7 @@ if ~isempty(numvals) %&& ~strcmp(cfg.layout,'1x2')
   if ~isfield(cfg,'colorbarxtick')
     xtick = get(H(iAxes).colorbar, 'xtick');
     if (cfg.isinteger) && (numel(numvals)<50)
-      warning('Would this work?')
+      %       warning('Would this work?')
       step = (range(xtick)-1)/range(xtick);
       xtick = [xtick(1)+step:step:xtick(2)-step];
     end

@@ -15,7 +15,6 @@ function [H, cfg] = view_surfdata (surf, data, cfg)
 %  .colormap  [Nx3]  default = [bluish; gray; redish] if .thres ~= 0; 
 %                    brewermap(256,'spectral') if .thres == 0
 % -- optional colormaps:
-%   (.usetruncated) [1x1]  true | false (default) for thresholded values
 %  .caxis     [1x2]  default = [1%tile 99%tile] for positive values; 
 %                    [-/+max(99%tile of abs)] for sigend values
 %  .thres     [1x1] | [1x2]  default=0
@@ -83,56 +82,48 @@ if ~isfield(cfg,'caxis')
   end
 end
 
-%% Color schemes
-NUMCOLORLEVELS = 256;
-if ~isfield(cfg,'subthres')
-  cfg.subthres = 0;
-end
-if ~isfield(cfg,'colormap')
-  if isequal(cfg.thres, [0 0])
-    cfg.colormap = flipud(brewermap(NUMCOLORLEVELS,'spectral'));
-    cfg.figurecolor = 'w';
-    cfg.basecolor = 'bright';
-  else
-    ind = linspace(cfg.caxis(1),cfg.caxis(2),NUMCOLORLEVELS);
-    NUMLEVELNEG = sum(ind <= cfg.thres(1));
-    NUMLEVELSUBTHR = sum(cfg.thres(1) < ind & ind < cfg.thres(2));
-    NUMLEVELPOS = sum(cfg.thres(2) <= ind);
-    cfg.colormap = [
-      flipud(sgcolormap('DBC3',NUMLEVELNEG));
-      0.35*ones(NUMLEVELSUBTHR,3);
-      sgcolormap('DRY',NUMLEVELPOS)];
-    if isfield(cfg,'usetruncated') && cfg.usetruncated % useful for what?
-      disp('using truncated colormap');
-      cfg.colormap = [
-        flipud(sgcolormap('DBC2',ceil((NUMCOLORLEVELS)/2)));
-        sgcolormap('DRY',ceil((NUMCOLORLEVELS)/2))];
-      idx = cfg.thres(1) < ind & ind < cfg.thres(2);
-      cfg.colormap(idx,:) = 0.35*ones(sum(idx),3);
-    end
-    cfg.figurecolor = 'k';
-    cfg.basecolor = 'dark';
-  end
-else
-  if ~isfield(cfg,'figurecolor')
-    cfg.figurecolor = 'w';
-  end
-  if ~isfield(cfg,'basecolor')
-    cfg.basecolor = 'bright';
-  end
-end
-switch cfg.basecolor
-  case 'dark'
-    cfg.basecolormap = [.15 .15 .15; .35 .35 .35];
-  case 'bright'
-    cfg.basecolormap = [.6 .6 .6; .8 .8 .8];
-end
-if cfg.subthres
-  cfg.basecolormap = [.7 .7 .7; .9 .9 .9];
-  cfg.colormap = flipud(brewermap(NUMCOLORLEVELS,'spectral'));
-  cfg.facealpha = 0.6;
-  cfg.figurecolor = 'k';
-end
+% %% Color schemes
+% NUMCOLORLEVELS = 256;
+% if ~isfield(cfg,'subthres')
+%   cfg.subthres = 0;
+% end
+% if ~isfield(cfg,'colormap')
+%   if isequal(cfg.thres, [0 0])
+%     cfg.colormap = flipud(brewermap(NUMCOLORLEVELS,'spectral'));
+%     cfg.figurecolor = 'w';
+%     cfg.basecolor = 'bright';
+%   else % thresholded
+%     ind = linspace(cfg.caxis(1),cfg.caxis(2),NUMCOLORLEVELS);
+%     NUMLEVELNEG = sum(ind <= cfg.thres(1));
+%     NUMLEVELSUBTHR = sum(cfg.thres(1) < ind & ind < cfg.thres(2));
+%     NUMLEVELPOS = sum(cfg.thres(2) <= ind);
+%     cfg.colormap = [
+%       flipud(sgcolormap('DBC3',NUMLEVELNEG));
+%       0.35*ones(NUMLEVELSUBTHR,3);
+%       sgcolormap('DRY',NUMLEVELPOS)];
+%     cfg.figurecolor = 'k';
+%     cfg.basecolor = 'dark';
+%   end
+% else
+%   if ~isfield(cfg,'figurecolor')
+%     cfg.figurecolor = 'w';
+%   end
+%   if ~isfield(cfg,'basecolor')
+%     cfg.basecolor = 'bright';
+%   end
+% end
+% switch cfg.basecolor
+%   case 'dark'
+%     cfg.basecolormap = [.15 .15 .15; .35 .35 .35];
+%   case 'bright'
+%     cfg.basecolormap = [.6 .6 .6; .8 .8 .8];
+% end
+% if cfg.subthres
+%   cfg.basecolormap = [.7 .7 .7; .9 .9 .9];
+%   cfg.colormap = flipud(brewermap(NUMCOLORLEVELS,'spectral'));
+%   cfg.facealpha = 0.6;
+%   cfg.figurecolor = 'k';
+% end
 
 %% base image: binary curvature ([0,1]) or just [1])
 if ~isfield(cfg,'curv')
