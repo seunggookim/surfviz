@@ -11,8 +11,8 @@ Download/fetch the package and add all subdirectories to MATLAB path:
 ## Demo
 ```Matlab
 subdir = fullfile(getenv('FREESURFER_HOME'),'subjects'); % Find FREESURFER default subject directory
-surfs = fsss_read_all_FS_surfs('fsaverage',subdir); % Reading template surfaces & everything in the directory
-fsss_view(surfs, surfs.THNS)
+surfs = fsss_read_all_FS_surfs('fsaverage',subdir); % Reading template surfaces & lots of things in the directory
+fsss_view(surfs, surfs.THNS) % for example, thickness, areas, white/pial curvature, sulcal depth, annotations, ...
 ```
 ![](https://github.com/solleo/surfviz/blob/master/images/demo1.png)
 
