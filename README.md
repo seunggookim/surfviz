@@ -21,31 +21,27 @@ fsss_view(surfs, thns)
 
 You can also set the surface to visualize, layout, and a threshold via `cfg` structure:
 ```
-cfg = struct('basesurf','PIAL','layout','1x2','thres',3...
-  'colorbartitle','[fsavgerage] Cortical Thickness','colorbarxlabel','[mm]');
+cfg = struct('basesurf','PIAL', 'layout','1x2', 'thres',3...
+  'colorbartitle','[fsavgerage] Cortical Thickness', 'colorbarxlabel','[mm]');
 fsss_view(surfs, thns, cfg)
 ```
 ![](https://github.com/solleo/surfviz/blob/master/images/demo2.1.png)
 
 ... and some captions and colorschemes: 
 ```
-cfg = struct('basesurf','INFL','layout','2x2','thres',1,...
-  'colorscheme','yellowblue',...
-  'colorbartitle','Rel. Ctx. Thns.','colorbarxlabel','Z-socre');
+thns_z = {zscore(thns{1}), zscore(thns{2})};
+cfg = struct('basesurf','INFL', 'layout','2x2', 'thres',1, ...
+  'colorbartitle','Rel. Ctx. Thns.', 'colorbarxlabel','Z-socre', ...
+  'colorscheme','yellowblue');
 fsss_view(surfs, thns_z, cfg)
 ```
 ![](https://github.com/solleo/surfviz/blob/master/images/demo4.1.png)
 
 ... finally you can create as many figures as you want without Matalb taking away your attention:
 ```
-cfg = struct('basesurf','INFL','layout','2x2','thres',1,...
-  'colorscheme','yellowblue',...
-  'colorbartitle','[fsavgerage] Normalized Cortical Thickness','colorbarxlabel','Z-score',...
-  'fname_png','demo4.png');
-fsss_view(surfs, thns_z, cfg)
-
->>> ls demo4.png
-demo4.png
+fsss_view(surfs, thns, struct('demo.png'))
+>>> ls demo.png
+demo.png
 ```
 
 See documentation for more information:
