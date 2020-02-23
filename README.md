@@ -30,11 +30,11 @@ fsss_view(surfs, thns, cfg)
 ```
 thns_z = {zscore(thns{1}), zscore(thns{2})};
 cfg = struct('basesurf','INFL', 'layout','2x2', 'thres',1, ...
-  'colorbartitle','Rel. Ctx. Thns.', 'colorbarxlabel','Z-socre', ...
+  'colorbartitle','Rel. Ctx. Thns.', 'colorbarxlabel','Z-score', ...
   'colorscheme','yellowblue');
 fsss_view(surfs, thns_z, cfg)
 ```
-![](https://github.com/solleo/surfviz/blob/master/images/demo4.2.png)
+![](https://github.com/solleo/surfviz/blob/master/images/demo4.3.png)
 
 ... finally you can create as many figures as you want without Matalb taking away your attention:
 ```
