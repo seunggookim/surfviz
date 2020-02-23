@@ -11,24 +11,21 @@ Download/fetch the package and add all subdirectories to MATLAB path:
 ## Demo
 ```
 subdir = fullfile(getenv('FREESURFER_HOME'),'subjects'); % Find FREESURFER default subject directory
-surfs = fsss_read_all_FS_surfs('fsaverage',subdir); % Reading template surfaces
-thns = cell(1,2);
-thns{1} = read_curv(fullfile(subdir,'fsaverage','surf','lh.thickness')); % 'read_curv' is from FREESURFER MATLAB functions
-thns{2} = read_curv(fullfile(subdir,'fsaverage','surf','rh.thickness'));
-fsss_view(surfs, thns)
+surfs = fsss_read_all_FS_surfs('fsaverage',subdir); % Reading template surfaces & everything in the directory
+fsss_view(surfs, surfs.THNS)
 ```
 ![](https://github.com/solleo/surfviz/blob/master/images/demo1.png)
 
 You can also set the surface to visualize, layout, and a threshold via `cfg` structure:
 ```
 cfg = struct('basesurf','PIAL','layout','1x2','thres',3);
-fsss_view(surfs, thns, cfg)
+fsss_view(surfs, surfs.THNS, cfg)
 ```
 ![](https://github.com/solleo/surfviz/blob/master/images/demo2.2.png)
 
 ... and some captions and colorschemes: 
 ```
-thns_z = {zscore(thns{1}), zscore(thns{2})};
+thns_z = {zscore(surfs.THNS{1}), zscore(surfs.THNS{2})};
 cfg = struct('basesurf','INFL', 'layout','2x2', 'thres',1, ...
   'colorbartitle','Rel. Ctx. Thns.', 'colorbarxlabel','Z-score', ...
   'colorscheme','yellowblue');
@@ -38,7 +35,7 @@ fsss_view(surfs, thns_z, cfg)
 
 ... finally you can create as many figures as you want without Matalb taking away your attention:
 ```
-fsss_view(surfs, thns, struct('demo.png')) % Nothing pops up but it creates a PNG file _silently_
+fsss_view(surfs, surfs.THNS, struct('demo.png')) % Nothing pops up but it creates a PNG file _silently_
 ls('demo.png') % check the file was created!
 ```
 
