@@ -35,7 +35,7 @@ cfg = struct('basesurf','INFL', 'layout','2x2', 'thres',1, ...
   'colorscheme','yellowblue');
 fsss_view(surfs, thns_z, cfg)
 ```
-![](https://github.com/solleo/surfviz/blob/master/images/demo4.1.png)
+![](https://github.com/solleo/surfviz/blob/master/images/demo4.2.png)
 
 ... finally you can create as many figures as you want without Matalb taking away your attention:
 ```
