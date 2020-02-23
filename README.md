@@ -10,13 +10,43 @@ Download/fetch the package and add all subdirectories to MATLAB path:
 
 ## Demo
 ```
-surfs = fsss_read_all_FS_surfs('bert',getenv('SUBJECTS_DIR')); % Reading surfaces of FREESURFER's example subject "bert" assuming the evironmental variable $SUBJECT_DIR is set as $FREESURFER_HOME/subjects
+subdir = fullfile(getenv('FREESURFER_HOME'),'subjects'); % Find FREESURFER default subject directory
+surfs = fsss_read_all_FS_surfs('fsaverage',subdir); % Reading template surfaces
 thns = cell(1,2);
-thns{1} = read_curv(fullfile(getenv('SUBJECTS_DIR'),'bert','surf','lh.thickness')); % 'read_curv' is from FREESURFER MATLAB functions
-thns{2} = read_curv(fullfile(getenv('SUBJECTS_DIR'),'bert','surf','rh.thickness'));
+thns{1} = read_curv(fullfile(subdir,'fsaverage','surf','lh.thickness')); % 'read_curv' is from FREESURFER MATLAB functions
+thns{2} = read_curv(fullfile(subdir,'fsaverage','surf','rh.thickness'));
 fsss_view(surfs, thns)
 ```
-![](https://github.com/solleo/surfviz/blob/master/demo.png)
+![](https://github.com/solleo/surfviz/blob/master/images/demo1.png)
+
+You can also set the surface to visualize, layout, and a threshold via `cfg` structure:
+```
+cfg = struct('basesurf','PIAL','layout','1x2','thres',3);
+fsss_view(surfs, thns, cfg)
+```
+![](https://github.com/solleo/surfviz/blob/master/images/demo2.png)
+
+... and some captions and colorschemes: 
+```
+cfg = struct('basesurf','INFL','layout','2x2','thres',1,...
+  'colorscheme','yellowblue',...
+  'colorbartitle','Rel. Ctx. Thns.','colorbarxlabel','Z-socre');
+fsss_view(surfs, thns_z, cfg)
+```
+![](https://github.com/solleo/surfviz/blob/master/images/demo4.png)
+
+... finally you can create as many figures as you want without Matalb taking away your attention:
+```
+cfg = struct('basesurf','INFL','layout','2x2','thres',1,...
+  'colorscheme','yellowblue',...
+  'colorbartitle','Rel. Ctx. Thns.','colorbarxlabel','Z-socre',...
+  'fname_png','demo4.png');
+fsss_view(surfs, thns_z, cfg)
+
+>>> ls demo4.png
+demo4.png
+```
+
 See documentation for more information:
 ```
 >>> doc fsss_view
