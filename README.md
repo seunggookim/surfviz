@@ -18,7 +18,7 @@ fsss_view(surfs, surfs.THNS) % for example, thickness, areas, white/pial curvatu
 
 You can also set the surface to visualize, layout, and a threshold via `cfg` structure:
 ```Matlab
-cfg = struct('basesurf','PIAL', 'layout','1x2', 'thres',3);
+cfg = struct('basesurf','PIAL', 'layout','1x2', 'thres',3); % just an arbitrary threshold for demo
 fsss_view(surfs, surfs.THNS, cfg)
 ```
 ![](https://github.com/solleo/surfviz/blob/master/images/demo2.2.png)
