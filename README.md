@@ -47,4 +47,4 @@ See documentation for more information:
 >>> doc fsss_view
 ```
 
-(cc) Seung-Goo Kim
+(cc) Seung-Goo Kim, 2019-2020.
