@@ -472,7 +472,8 @@ for hemi = 1:2
   % color-code bars:
   ind = zeroone(xi, cfg.caxis(1), cfg.caxis(2))*(size(cfg.colormap,1)-1);
   ind = 1+floor(ind);
-  rgb = squeeze(ind2rgb(ind, cfg.colormap)) * 0.85;
+%   rgb = squeeze(ind2rgb(ind, cfg.colormap)) * 0.85;
+  rgb = cfg.colormap(ind,:) * 0.85; % a bit marker
   
   % suprathrs_neg:
   idx = xi <= cfg.thres(1);
@@ -564,7 +565,7 @@ if ~isempty(numvals) %&& ~strcmp(cfg.layout,'1x2')
   H(iAxes).colorbar = colorbar(H(iAxes).axes, 'location','north', ...
     'fontsize',cfg.colorbarfontsize*0.9);
   caxis(H(iAxes).axes, cfg.caxis);
-  if cfg.isinteger && (numel(numvals)<50) % descritize colorbar for integer values
+  if cfg.isinteger && (numel(unique(numvals))<50) % descritize colorbar for integer values
     numbins = min([200 numel(unique(numvals))]);
     if exist('histcounts','file')
       [~, edges] = histcounts(numvals, numbins, 'BinMethod','integers');
@@ -574,7 +575,7 @@ if ~isempty(numvals) %&& ~strcmp(cfg.layout,'1x2')
     end
     ind = zeroone(xi, cfg.caxis(1), cfg.caxis(2))*(size(cfg.colormap,1)-1);
     ind = 1+floor(ind);
-    cfg.colormap = squeeze(ind2rgb(ind, cfg.colormap));
+    cfg.colormap = cfg.colormap(ind,:);
   end
   colormap(H(iAxes).axes, cfg.colormap)
   axis off;
@@ -595,13 +596,18 @@ if ~isempty(numvals) %&& ~strcmp(cfg.layout,'1x2')
       'color',cfg.histfontcolor, 'interp',cfg.colorbarinterp);
   end
   if ~isfield(cfg,'colorbarxtick')
-    xtick = get(H(iAxes).colorbar, 'xtick');
-    if (cfg.isinteger) && (numel(numvals)<50)
+    if (cfg.isinteger) && (numel(unique(numvals))<50)
       %       warning('Would this work?')
-      step = (range(xtick)-1)/range(xtick);
-      xtick = [xtick(1)+step:step:xtick(2)-step];
+%       step = (range(xtick)-1)/range(xtick);
+%       xtick = [xtick(1)+step:step:xtick(2)-step];
+      xtick = xi;
+      step = (xi(end)-xi(1))/numel(xi);
+      xtick2 = xtick(1) + step/2 + [0:step:step*(numel(xi)-1)];
+      cfg.colorbarxtick = xtick2;
+      cfg.colorbarxticklabel = xtick;
+    else
+      cfg.colorbarxtick = get(H(iAxes).colorbar, 'xtick');
     end
-    cfg.colorbarxtick = xtick;
   end
   set(H(iAxes).colorbar,'color',get(gcf,'color'),...
     'xcolor',cfg.histfontcolor, 'ycolor',cfg.histfontcolor,...
