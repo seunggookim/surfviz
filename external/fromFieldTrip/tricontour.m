@@ -152,7 +152,8 @@ for cnt_indx = 1:length(levels)
 
   group_indices = unique(edgegroup(~isnan(edgegroup)))';
   for g = group_indices
-    thisverts = edges(edgegroup == g,:)
+    thisedges = unique(edges(edgegroup == g,:),'rows');
+    
 
 
     plot3(verts(edgegroup == g,1), verts(edgegroup == g,2), verts(edgegroup == g,3), ...
