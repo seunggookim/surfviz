@@ -4,11 +4,11 @@ function [H, cfg] = view_surfdata (surf, data, cfg)
 % visualize scaled data on a surface
 %
 % [INPUT]
-% surf  (1x1)  MATLAB patch structure
-% data  [Vx1]  Vertex-mapped scalar data
-% view  [1x2]  view angle, default = [-90 0]
+% surf     (1x1)  MATLAB patch structure
+% data     [Vx1]  Vertex-mapped scalar data
+% view     [1x2]  view angle, default = [-90 0]
 %
-% cfg   (1x1)  structure to configure options (optional):
+% cfg      (1x1)  configuration structure handles:
 % - color schemes (presets)
 %  .style    '1xN'  'spectral' | 'spectraltrans' | 'fsl' | 'freesurfer'
 % - color coding (manual)
@@ -29,12 +29,12 @@ function [H, cfg] = view_surfdata (surf, data, cfg)
 %                           | false (default)
 %  .isocurvcolor     [1x2]  default = [0 0 0]
 %  .isocurvlinewidth [1x1]  default = 0.5
-%  .isocurvlinestyle '1xN'  default = '-'
+%  .isocurvlinestyle '1xN'  default = '-';
 % -- cluster contours:
 %  .doclusid         [1x1]  true (requires surf.(basesurf).isoclus)
 %  .isocluscolor     [1x2]  default = [1 1 1]
-%  .isocluslinewidth [1x1]  default = 2
-%  .isocluslinestyle '1xN'  default = '-'
+%  .isocluslinewidth [1x1]  default = 0.5
+%  .isocluslinestyle '1xN'  default = '-';
 %
 % - lighting
 %  .camlight    [1x1]  true (default) | false
@@ -71,8 +71,15 @@ CC0 1.0 Universal
     HEREUNDER.
 %}
 
-%% C O N F I G ============================================================
+%% -------------------------------------------------------------------------
 if ~exist('cfg','var'), cfg=[]; end
+% for SurfStat surfaces
+if isfield(surf,'tri') && ~isfield(surf,'faces')
+  surf.faces = single(surf.tri);
+end
+if isfield(surf,'coord') && ~isfield(surf,'vertices')
+  surf.vertices = single(surf.coord)';
+end
 
 %% Color axis
 if islogical(data), data = uint8(data); end
@@ -100,9 +107,7 @@ if ~isfield(cfg,'caxis')
 end
 
 
-%% M A I N ================================================================
-
-%% Base surface: binary curvature ([0,1]) or just [1])
+%% base image: binary curvature ([0,1]) or just [1])
 if ~isfield(cfg,'curv')
   img_base = ones(size(data));
 else
@@ -116,7 +121,7 @@ img_base_rgb = squeeze(ind2rgb(img_base+1, cfg.basecolormap));
 % see CAT_SURF_RENDER for an example of using ind2rgb
 
 
-%% Overlay surface
+%% overlay image
 img_over = data;
 img_over(cfg.thres(1)<data & data<cfg.thres(2)) = nan; % thresholding
 if isfield(cfg,'mask'), img_over(~cfg.mask) = nan; end % masking
@@ -137,7 +142,7 @@ else
     'edgecolor', 'none', 'FaceVertexCData', img_base_rgb, ...
     'ambientstrength',0.4, 'diffusestrength',0.8, 'specularstrength',0);
 end
-% see CAT_SURF_RENDER for a nice exmaple of PATCH options
+% see CAT_SURF_RENDER for a good exmaple of PATCH options
 if ~isfield(cfg,'facealpha'), cfg.facealpha = 1; end
 H.oversurf = patch('faces',F, 'vertices',V, 'facecolor','interp', ....
   'edgecolor', 'none', 'FaceVertexCData', img_over, ...
@@ -169,8 +174,9 @@ set(gcf,'color',cfg.figurecolor)
 if ~isfield(cfg,'camlight'), cfg.camlight = 1; end
 if ~isfield(cfg,'camposition'), cfg.camposition=[0 10]; end
 if cfg.camlight
-  if ismac && isempty(getCurrentWorker) % only MAC but not in parallel
-    %===lines from CAT_SURF_RENDER (CAT12/SPM toolbox)===
+  if ismac && isempty(getCurrentWorker) % MAC & not by a worker
+    %===lines from CAT_SURF_RENDER (CAT12/SPM toolbox)
+    % REF:
     % set inner light
     H.light = light('Position',[0 0 0]);
     set(H.basesurf,'BackFaceLighting','unlit');
@@ -178,7 +184,7 @@ if cfg.camlight
     if isfield(H,'subthsurf')
       set(H.subthsurf,'BackFaceLighting','unlit');
     end
-    %===lines from CAT_SURF_RENDER (CAT12/SPM toolbox)===
+    %===lines from CAT_SURF_RENDER
   else
     H.light = camlight(cfg.camposition(1), cfg.camposition(2));
   end
@@ -232,19 +238,19 @@ if ~isfield(cfg,'isocluscolor')
   cfg.isocluscolor = [1 1 1];
 end
 if ~isfield(cfg,'isocurvlinewidth')
-  cfg.isocluslinewidth = 2;
+  cfg.isocluslinewidth = 0.5;
 end
 if ~isfield(cfg,'isocurvlinestyle')
   cfg.isocluslinestyle = '-';
 end
-if isfield(surf,'isoclus') && ~(isfield(cfg,'doisoclus') && ~cfg.doisoclus)
+if isfield(surf,'iso') && ~(isfield(cfg,'doisocurv') && ~cfg.doisocurv)
   hold on
-  H.contour_isoclus = hggroup;
-  for g = 1:numel(surf.isoclus)
-    xyz = surf.isoclus(g).xyz;
-    plot3(xyz(:,1), xyz(:,2), xyz(:,3), 'color',cfg.isocluscolor, ...
-      'linestyle',cfg.isocluslinestyle,'linewidth',cfg.isocluslinewidth, ...
-      'Parent',H.contour_isoclus)
+  H.contour_isocurv = hggroup;
+  for g = 1:numel(surf.isocurv)
+    xyz = surf.isocurv(g).xyz;
+    plot3(xyz(:,1), xyz(:,2), xyz(:,3), 'color',cfg.isocurvcolor, ...
+      'linestyle',cfg.isocurvlinestyle,'linewidth',cfg.isocurvlinewidth, ...
+      'Parent',H.contour_isocurv)
   end
   hold off
 end

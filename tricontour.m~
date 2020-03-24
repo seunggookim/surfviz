@@ -10,36 +10,16 @@ function [hc, contour] = tricontour(surf, val, levels, draw)
 % x180+ faster (e.g., 100k line obj [14 s] vs. 200 line obj, [0.075 s])
 %
 % Instead, now it takes about 3 sec to form line groups before drawing. 
-% But this computation can be avoided by using the "contour" variable 
-% itself. This is particularly useful if you need to draw same contours
-% (i.e., isocurvature contours of the template surfaces) over and over 
-% again for various views.
+% But this computation needs to be done only once when visualizing multiple
+% views of the same surface. This is particularly useful if you need to 
+% draw same contours (i.e., isocurvature contours of the template surfaces)
+% over and over again for various views.
 %
 % This version is included in https://github.com/solleo/surfviz
 %
 % SEE ALSO: FSSS_VIEW, FT_TRIPLOT, FSSS_READ_ALL_FS_SURFS
 %
 % (cc) 2020, sgKIM, solleo@gmail.com
-
-% Copyright (C) 2001=2006, Robert Oostenveld
-%
-% This file is part of FieldTrip, see http://www.ru.nl/neuroimaging/fieldtrip
-% for the documentation and details.
-%
-%    FieldTrip is free software: you can redistribute it and/or modify
-%    it under the terms of the GNU General Public License as published by
-%    the Free Software Foundation, either version 3 of the License, or
-%    (at your option) any later version.
-%
-%    FieldTrip is distributed in the hope that it will be useful,
-%    but WITHOUT ANY WARRANTY; without even the implied warranty of
-%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%    GNU General Public License for more details.
-%
-%    You should have received a copy of the GNU General Public License
-%    along with FieldTrip. If not, see <http://www.gnu.org/licenses/>.
-%
-% $Id: triplot.m 6321 2012-08-03 16:02:37Z roevdmei $
 
 pnt = surf.vertices;
 tri = surf.faces;
@@ -50,13 +30,17 @@ end
 if ~exist('draw','var')
   draw = true;
 end
+DEBUG = false;
 
+%% LINES FROM FT_TRIPLOT (FROM HERE)========================================
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % compute contours for 2D or 3D triangulation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-fprintf('Computing contour..')
-tic
+
+if DEBUG
+  tic; fprintf('Computing contour..')
+end
 % map values onto vertex list
 triangle_val = val(tri);
 % find min value for each triangle
@@ -93,6 +77,10 @@ for cnt_indx=1:length(levels)
   % remember the details for external reference
   contour(cnt_indx).level = cnt;
   contour(cnt_indx).n     = counter;
+  if size(pnt,2) == 2 % 2-D triangular mesh
+    intersetc1 = [intersect1 zeros(size(intersect1,1),1)];
+    intersetc2 = [intersect2 zeros(size(intersect2,1),1)];
+  end  
   contour(cnt_indx).intersect1 = intersect1;
   contour(cnt_indx).intersect2 = intersect2;
 end
@@ -106,24 +94,23 @@ for cnt_indx=1:length(levels)
   intersect2 = [intersect2; contour(cnt_indx).intersect2];
   cntlevel   = [cntlevel; ones(contour(cnt_indx).n,1) * levels(cnt_indx)];
 end
-
-X = [intersect1(:,1) intersect2(:,1)]';
-Y = [intersect1(:,2) intersect2(:,2)]';
-C = [cntlevel(:)     cntlevel(:)]';
-if size(pnt,2)>2
-  Z = [intersect1(:,3) intersect2(:,3)]';
-else
-  Z = zeros(2, length(cntlevel));
+if DEBUG
+  toc
 end
-toc
+% LINES FROM FT_TRIPLOT (UNTIL HERE)=======================================
 
-tic
-fprintf('Connecting edges...')
-
+%% Connecting edges
+if DEBUG
+  tic; fprintf('Connecting edges...')
+end
 for cnt_indx = 1:length(levels)
-  % ignore tiny differences from interpolation:
-  p1 = round(contour(cnt_indx).intersect1*1000)/1000;
-  p2 = round(contour(cnt_indx).intersect2*1000)/1000;
+  p1 = contour(cnt_indx).intersect1;
+  p2 = contour(cnt_indx).intersect2;
+  
+  % ignore tiny differences from interpolation
+  scale = [range(p1)];
+  p1 = round(p1*scale)/scale;
+  p2 = round(p2*scale)/scale;
   verts = unique([p1;p2],'rows');
   [~, v1] = ismember(p1, verts, 'rows');
   [~, v2] = ismember(p2, verts, 'rows');
@@ -192,8 +179,11 @@ for cnt_indx = 1:length(levels)
     end
   end
 end
-toc % 2.98 sec!
+if DEBUG
+  toc % 2.98 sec for fsaverage
+end
 
+%% Draw contours (or not)
 if draw
   tic
   fprintf('Drawing contours...');
