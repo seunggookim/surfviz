@@ -1,6 +1,12 @@
 # surfviz
 
-MATLAB scripts for visualization of surface-mapped scalar values. Various FreeSurfer (http://freesurfer.net/) surface models (white, pial, inflated, sphere) can be used. OpenGL is required for transparent overlay. External MATLAB codes (`export_fig`, `brewermap`) are included. Largely inspired by visualization functions in `CAT12` (http://www.neuro.uni-jena.de/cat/).
+MATLAB codes for visualization of surface-mapped scalar values. Largely inspired by visualization functions in `CAT12` (http://www.neuro.uni-jena.de/cat/).
+
+## Features
+- Various FreeSurfer (http://freesurfer.net/) surface models (white, pial, inflated, semi-inflated, sphere) can be used. 
+- OpenGL is required for transparent overlay. Otherwise binary curvature won't be rendered.
+- Multiple figures can be created in the background (MATLAB won't bother you during a batch process).
+- (NEW) Quick (0.07 sec per `fsaverage` hemisphere) isocontour plotting using a modification of `ft_triplot()` from FieldTrip (http://www.fieldtriptoolbox.org/).
 
 ## Install
 Download/fetch the package and add all subdirectories to MATLAB path:
@@ -33,11 +39,19 @@ fsss_view(surfs, thns_z, cfg)
 ```
 ![](https://github.com/solleo/surfviz/blob/master/images/demo4.3.png)
 
-... finally you can create as many figures as you want without Matalb taking away your attention:
+... finally you can create as many figures as you want without Matalb taking away your attention (figure's visibility will be `off`):
 ```Matlab
 fsss_view(surfs, surfs.THNS, struct('demo.png')) % Nothing pops up but it creates a PNG file _silently_
 ls('demo.png') % check the file was created!
 ```
+
+(NEW) With an edge-connecting algorithm, isocontours can be plotted very quickly (0.07 sec per 160k-vert surface). Isocurvature can be very useful for unthresholded maps to mark the boundary between gyri and sulci. Any arbitrary contours (significant clusters, manual/atals-based ROIs) can be also overlaid:
+```Matlab
+subdir = fullfile(getenv('FREESURFER_HOME'),'subjects'); % Find FREESURFER default subject directory
+surfs = fsss_read_all_FS_surfs('fsaverage',subdir, struct('isocurv','INFL')); % Computes isocurvature line groups when loading
+fsss_view(surfs, surfs.THNS)
+```
+![](https://github.com/solleo/surfviz/blob/master/images/demo5.png)
 
 See documentation for more information:
 ```Matlab
