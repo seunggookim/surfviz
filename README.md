@@ -1,11 +1,11 @@
 # surfviz
 
-MATLAB codes for visualization of surface-mapped scalar values. Largely inspired by visualization functions in `CAT12` (http://www.neuro.uni-jena.de/cat/) but more adaptable in batch processing (no user-interaction required).
+MATLAB codes for visualization of surface-mapped scalar values. Largely inspired by visualization functions in `CAT12` (http://www.neuro.uni-jena.de/cat/) but more useful in batch (serial or parallel) processing (no user-interaction required).
 
 ## Features
 - Various FreeSurfer (http://freesurfer.net/) surface models (white, pial, inflated, semi-inflated, sphere) can be used. 
 - OpenGL is required for transparent overlay. Otherwise binary curvature won't be rendered.
-- Multiple figures can be created in the background (MATLAB won't bother you during a batch process).
+- Multiple figures can be created in the background (MATLAB won't bother you during batch processing).
 - (NEW) Quick (0.07 sec per `fsaverage` hemisphere) isocontour plotting using a modification of `ft_triplot()` from FieldTrip (http://www.fieldtriptoolbox.org/).
 
 ## Install
