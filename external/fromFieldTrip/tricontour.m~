@@ -7,17 +7,11 @@ function [hc, contour] = tricontour(surf, val, levels, draw)
 % (see http://www.ru.nl/neuroimaging/fieldtrip).
 %
 % Improvement is to form groups of edges so that MATLAB can handle them
-% x180+ faster (e.g., 100k line obj [14 s] vs. 200 line obj, [0.075 s])
+% x180+ faster (e.g., 100k line objects [14 s] vs. 200 line objects, [0.075 s])
+% 
 %
-% Instead, now it takes about 3 sec to form line groups before drawing. 
-% But this computation can be avoided by using the "contour" variable 
-% itself. This is particularly useful if you need to draw same contours
-% (i.e., isocurvature contours of the template surfaces) over and over 
-% again for various views.
-%
-% This version is included in https://github.com/solleo/surfviz
-%
-% SEE ALSO: FSSS_VIEW, FT_TRIPLOT, FSSS_READ_ALL_FS_SURFS
+% Now it takes about 3 sec to form line groups before drawing. But this
+% computation can be avoided by passing the "contour" variable itself.
 %
 % (cc) 2020, sgKIM, solleo@gmail.com
 
@@ -125,9 +119,7 @@ for cnt_indx = 1:length(levels)
   p1 = round(contour(cnt_indx).intersect1*1000)/1000;
   p2 = round(contour(cnt_indx).intersect2*1000)/1000;
   verts = unique([p1;p2],'rows');
-  [~, v1] = ismember(p1, verts, 'rows');
-  [~, v2] = ismember(p2, verts, 'rows');
-  edges = [v1, v2];
+  edges = [ismember(p1, verts, 'rows') ismember(p2, verts, 'rows')];
   
   isusededge = false(size(edges,1),1); % is this edge used or not?
   g = 1; % group index

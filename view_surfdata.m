@@ -224,21 +224,33 @@ if isfield(cfg,'clusid')
 end
 
 %% Isocurvature contours
-if ~isfield(cfg,'doisocurv')
-  cfg.doisocurv = 0;
-end
-if cfg.doisocurv
+% if ~isfield(cfg,'doisocurv')
+%   cfg.doisocurv = 0;
+% end
+% if cfg.doisocurv
  if ~isfield(cfg,'isocurvcolor')
   cfg.isocurvcolor=[0 0 0];
  end
  if ~isfield(cfg,'isocurvcontourwidth')
   cfg.isocurvcontourwidth=0.5;
  end
- if ~isfield(cfg,'noisocurvcontour')
-  hold on;
-  [~,H.contour_isocurv] = ft_triplot(V, F, cfg.curv, 'contour_bw', 1e-10);
-  set(H.contour_isocurv, 'color',cfg.isocurvcolor, ...
-    'linewidth', cfg.isocurvcontourwidth);
- end
+%  if ~isfield(cfg,'noisocurvcontour')
+%   hold on;
+%   [~,H.contour_isocurv] = ft_triplot(V, F, cfg.curv, 'contour_bw', 1e-10);
+%   set(H.contour_isocurv, 'color',cfg.isocurvcolor, ...
+%     'linewidth', cfg.isocurvcontourwidth);
+%  end
+% end
+if isfield(surf,'isocurv')
+  hold on
+  H.contour_isocurv = hggroup;
+  for g = 1:numel(surf.isocurv)
+    xyz = surf.isocurv(g).xyz;
+    plot3(xyz(:,1), xyz(:,2), xyz(:,3), 'color',cfg.isocurvcolor, ...
+      'linestyle','-','linewidth',cfg.isocurvcontourwidth, ...
+      'Parent',H.contour_isocurv)
+  end
+  hold off
 end
+
 end
