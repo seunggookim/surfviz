@@ -125,50 +125,74 @@ toc
 % end
 % toc % 0.04 sec?
 
-% tic
-% fprintf('Connecting edges...')
-% for cnt_indx = 1:length(levels)
-%   p1 = (contour(cnt_indx).intersect1);
-%   p2 = (contour(cnt_indx).intersect2);
-%   tic
-%   verts = unique([p1;p2],'rows');
-%   [~,v1] = ismember(p1, verts, 'rows');
-%   [~,v2] = ismember(p2, verts, 'rows');
-%   edges = [v1 v2];
-%   
-%   edgegroup = nan(size(edges,1),1);
-%   %   group_index = 1;
-%   for i = 1:size(edges,1)
-%     for v = 1:2
-%       thisv = edges(i,v);
-%       edges_including_thisv = ~~sum(edges == thisv,2);
-%       if all(isnan(edgegroup(edges_including_thisv)))
-%         edgegroup(edges_including_thisv) = i;
-%       else
-%         edgegroup(edges_including_thisv) = nanmin(edgegroup(edges_including_thisv));
-%       end
-%     end
-%   end
-%   
-%   group_indices = unique(edgegroup(~isnan(edgegroup)))';
-%   for g = group_indices
-%     edges(edgegroup == g,:)
-%     
-%     
-%     plot3(verts(edgegroup == g,1), verts(edgegroup == g,2), verts(edgegroup == g,3), ...
-%       'color','k')
-%   end
-%   
-%   toc
-%   
-% end
-% toc % 0.04 sec?
-
-
 tic
-fprintf('Drawing contours...');
-h = line(X,Y,Z, 'color','k','linewidth',2);
-toc % PROBLEM IS THAT NOW MATLAB CREATES TOO MANY OBJECTS SINCE 2006!
+fprintf('Connecting edges...')
+for cnt_indx = 1:length(levels)
+  p1 = (contour(cnt_indx).intersect1);
+  p2 = (contour(cnt_indx).intersect2);
+  tic
+  verts = unique([p1;p2],'rows');
+  [~,v1] = ismember(p1, verts, 'rows');
+  [~,v2] = ismember(p2, verts, 'rows');
+  edges = [v1 v2];
+
+  edgegroup = nan(size(edges,1),1);
+  %   group_index = 1;
+  for i = 1:size(edges,1)
+    for v = 1:2
+      thisv = edges(i,v);
+      edges_including_thisv = ~~sum(edges == thisv,2);
+      if all(isnan(edgegroup(edges_including_thisv)))
+        edgegroup(edges_including_thisv) = i;
+      else
+        edgegroup(edges_including_thisv) = nanmin(edgegroup(edges_including_thisv));
+      end
+    end
+  end
+
+  group_indices = unique(edgegroup(~isnan(edgegroup)))';
+  for g = group_indices
+    thisverts = edges(edgegroup == g,:)
+
+
+    plot3(verts(edgegroup == g,1), verts(edgegroup == g,2), verts(edgegroup == g,3), ...
+      'color','k')
+  end
+
+  toc
+
+end
+toc % 0.04 sec?
+
+% disp('rendering')
+% tic;
+% % make black-white contours
+% hc = zeros(size(cntlevel));
+% for i=1:length(cntlevel)
+%   if cntlevel(i)>0
+%     linestyle = '-';
+%     linewidth = 1;
+%   elseif cntlevel(i)<0
+%     linestyle = '--';
+%     linewidth = 1;
+%   else
+%     linestyle = '-';
+%     linewidth = 2;
+%   end
+%   h1 = patch('XData', X(:,i), 'Ydata', Y(:,i), ...
+%     'ZData', Z(:,i), 'CData', C(:,i)*nan, ...
+%     'facecolor','none','edgecolor','black', ...
+%     'linestyle', linestyle, 'linewidth', linewidth, ...
+%     'userdata',cntlevel(i));
+%   hc(i) = h1;
+% end
+% toc % 4 sec?!
+
+
+% tic
+% fprintf('Drawing contours...');
+% h = line(X,Y,Z, 'color','k','linewidth',2);
+% toc % PROBLEM IS THAT NOW MATLAB CREATES TOO MANY OBJECTS SINCE 2006!
 
 % tic
 % fprintf('Drawing contours...');
