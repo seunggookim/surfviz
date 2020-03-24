@@ -1,6 +1,6 @@
 # surfviz
 
-MATLAB codes for visualization of surface-mapped scalar values. Largely inspired by visualization functions in `CAT12` (http://www.neuro.uni-jena.de/cat/) but more useful in batch (serial or parallel) processing (no user-interaction required).
+MATLAB codes for visualization of surface-mapped scalar values. Largely inspired by visualization functions in `CAT12` (http://www.neuro.uni-jena.de/cat/) but more useful in serial/parallel batch processing (i.e., no user-interaction required).
 
 ## Features
 - Various FreeSurfer (http://freesurfer.net/) surface models (white, pial, inflated, semi-inflated, sphere) can be used. 
