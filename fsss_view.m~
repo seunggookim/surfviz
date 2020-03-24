@@ -16,7 +16,7 @@ function [H, cfg] = fsss_view (surfs, data, cfg)
 %     | [Nx1] a vector from the left and right (in this order) hemispheres
 %
 % cfg   (1x1) structure to configure options (optional):
-% -surfaces layout
+% - surfaces layout
 %  .basesurf '1xN'  'INFL' (default) | 'WHITE' | 'PIAL'
 %                   ('SMOOTHWM' | 'SPHERE' | 'SUPTEMP.*' if in surfs)
 %  .layout   '1xN'  '2x4' (default) | '1x4' | '2x2' | '1x2' | '1x2oblq' |
@@ -34,7 +34,7 @@ function [H, cfg] = fsss_view (surfs, data, cfg)
 %                   '1x4' [1 1 2 2 ]
 %                   '2x2' [1 2 1 2]
 %                   '1x2' [1 2]
-%  .figureposition [1x4] default is determined by layout:
+%  .figureposition  [1x4] default is determined by layout:
 %                   '2x4' [5   694   900   365]
 %                   '1x4' [5   694   900   220]
 %                   '2x2' [5   694   900   793]
@@ -43,16 +43,15 @@ function [H, cfg] = fsss_view (surfs, data, cfg)
 %  .figurecolor [1x3] | '1x1' default = 'k' if .thres ~= 0
 %                                     = 'w' if .thres == 0
 %
-% -color schemes (presets)
+% - color schemes (presets)
 %  .colorscheme    '1xN'  'darkspectral' | 'darkparula'
-% -color coding (manual)
+% - color coding (manual)
 %  .basecolor '1xN'  'dark' (0.15/0.35) | 'bright' (0.7/1)
 %  .facealpha [1x1]  default = 1 (overlay)
 %  .colormap  [Nx3]  default = [bluish; gray; redish] if .thres ~= 0;
 %                    brewermap(256,'spectral') if .thres == 0
 %
 % -- optional colormaps:
-%   (.usetruncated) [1x1]  true | {false} for thresholded values
 %  .caxis     [1x2] default is determined by signs of values:
 %                   for positive values: [1%tile 99%tile]
 %                   for sigend values: [-/+max(99%tile of abs)]
@@ -75,18 +74,18 @@ function [H, cfg] = fsss_view (surfs, data, cfg)
 %  .isocluslinewidth [1x1]  default = 2
 %  .isocluslinestyle '1xN'  default = '-'
 %
-% -lighting
+% - lighting
 %  .camlight    [1x1]  {true} | false
 %  .camposition [1x2]  default=[0 10]
 %
-% -histograms
+% - histograms
 %  .dohist        [1x1]  true (default) | false
 %  .histfontsize  [1x1]  default=8
 %  .histfontsize
 %  .histxtick
 %  .histxticklabel
 %
-% -colorbar
+% - colorbar
 %  .docolorbar       [1x1]  {true} | false
 %  .colorbartitle
 %  .colorbarinterp   '1xN'  {'none'} | 'tex' | 'latex'
@@ -94,7 +93,7 @@ function [H, cfg] = fsss_view (surfs, data, cfg)
 %  .colorbarxlabel
 %  .colorbarxlabelinterp '1xN'  {'none'} | 'tex' | 'latex'
 %
-% -print (requires EXPORT_FIG)
+% - print (requires EXPORT_FIG)
 %  .fname_png
 %  .dpi
 %
@@ -121,7 +120,7 @@ function [H, cfg] = fsss_view (surfs, data, cfg)
 %  .colorbartitle
 %  .colorbarfontsize
 %
-% (cc) 2019-2020, sgKIM. solleo@gmail.com
+% (cc) 2019-2020, sgKIM. mailto:/solleo@gmail.com
 %
 % See also VIEW_SURFDATA, FSSS_READ_ALL_FS_SURFS, EXPORT_FIG
 
@@ -213,7 +212,6 @@ if isfield(cfg,'colorscheme')
         [linspace(1,1,64); linspace(0.25,1,64); linspace(0,0,64)]'];
       cfg.figurecolor = 'k';
       cfg.basecolor = 'dark';
-      %       cfg.usetruncated = true;
     otherwise
       warning('%s is not valid colorscheme. Ignored', cfg.colorscheme)
   end

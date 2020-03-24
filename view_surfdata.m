@@ -49,12 +49,10 @@ function [H, cfg] = view_surfdata (surf, data, cfg)
 % H.axes
 % H.contour_isocurv
 %
-%
-% See also VIEWSURFDATA
-%
+% (cc) 2019-2020, sgKIM. mailto://solleo@gmail.com
 % This is distributed from https://github.com/solleo/surfviz
 %
-% (cc) 2019-2020, sgKIM. mailto://solleo@gmail.com
+% SEE ALSO: FSSS_VIEW, FSSS_READ_ALL_FS_SURFS
 
 %{
 Creative Commons Legal Code
@@ -70,6 +68,7 @@ CC0 1.0 Universal
     THE USE OF THIS DOCUMENT OR THE INFORMATION OR WORKS PROVIDED
     HEREUNDER.
 %}
+
 
 %% C O N F I G ============================================================
 if ~exist('cfg','var'), cfg=[]; end

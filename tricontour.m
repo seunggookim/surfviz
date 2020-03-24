@@ -1,7 +1,21 @@
 function [hc, contour] = tricontour(surf, val, levels, draw)
-% plots linear interpolated contours on a 2D/3D triangulated suraface.
+% plots/creates linear interpolated contours on a 2D/3D trisurface.
 %
-% [hc, contour]=tricontour(surf, val, levels)
+% [USAGE]
+% tricontour(surf, val)
+% [hc] = tricontour(surf, val, levels)
+% [hc, contour] = tricontour(surf, val, levels, draw)
+%
+% [INPUT]
+% surf   (1x1)  triangular mesh structure with .vertices and .faces fields
+% val    [1xV]  vertex-mapped values
+% levels [1xN]  level(s) to make isocontours (default: 5-pt linear spacing)
+% draw   [1x1]  true to draw (default) | false to suppress
+%
+% [OUTPUT]
+% hc      (1x1)  group object to handle contour line series
+% contour (1xK)  structure of which .contour(c).group(g).xyz contains
+%                x,y,z-coordinates of g-th contour of c-th level
 %
 % This function is based on FT_TRIPLOT() of the FIELDTRIP package
 % (see http://www.ru.nl/neuroimaging/fieldtrip).
@@ -9,21 +23,35 @@ function [hc, contour] = tricontour(surf, val, levels, draw)
 % Improvement is to form groups of edges so that MATLAB can handle them
 % x180+ faster (e.g., 100k line obj [14 s] vs. 200 line obj, [0.075 s])
 %
-% Instead, now it takes about 3 sec to form line groups before drawing. 
-% But this computation needs to be done only once when visualizing multiple
-% views of the same surface/data.
+% Instead, now it takes about 3 sec to form line groups (connecting edges)
+% before drawing. But this computation needs to be done only once when 
+% visualizing multiple views of the same surface/data.
 %
-% This version is included in https://github.com/solleo/surfviz
+% (cc) 2019-2020, sgKIM. mailto://solleo@gmail.com
+% This is distributed from https://github.com/solleo/surfviz
 %
 % SEE ALSO: FSSS_VIEW, FT_TRIPLOT, FSSS_READ_ALL_FS_SURFS
-%
-% (cc) 2020, sgKIM, solleo@gmail.com
+
+%{
+Creative Commons Legal Code
+
+CC0 1.0 Universal
+
+    CREATIVE COMMONS CORPORATION IS NOT A LAW FIRM AND DOES NOT PROVIDE
+    LEGAL SERVICES. DISTRIBUTION OF THIS DOCUMENT DOES NOT CREATE AN
+    ATTORNEY-CLIENT RELATIONSHIP. CREATIVE COMMONS PROVIDES THIS
+    INFORMATION ON AN "AS-IS" BASIS. CREATIVE COMMONS MAKES NO WARRANTIES
+    REGARDING THE USE OF THIS DOCUMENT OR THE INFORMATION OR WORKS
+    PROVIDED HEREUNDER, AND DISCLAIMS LIABILITY FOR DAMAGES RESULTING FROM
+    THE USE OF THIS DOCUMENT OR THE INFORMATION OR WORKS PROVIDED
+    HEREUNDER.
+%}
 
 pnt = surf.vertices;
 tri = surf.faces;
-absmax = max(abs([min(val) max(val)]));
 if ~exist('levels','var')
-  levels = linspace(-absmax,absmax,21);
+  absmax = max(abs([min(val) max(val)]));
+  levels = linspace(-absmax,absmax,5);
 end
 if ~exist('draw','var')
   draw = true;
