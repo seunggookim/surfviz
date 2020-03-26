@@ -25,13 +25,13 @@ function [H, cfg] = view_surfdata (surf, data, cfg)
 %
 % - contours
 % -- isocurvature contours:
-%  .doisocurv        [1x1]  true (requires surf.(basesurf).isocurv)
+%  .doisocurv        [1x1]  true (requires surf.isocurv)
 %                           | false (default)
 %  .isocurvcolor     [1x2]  default = [0 0 0]
 %  .isocurvlinewidth [1x1]  default = 0.5
 %  .isocurvlinestyle '1xN'  default = '-'
 % -- cluster contours:
-%  .doclusid         [1x1]  true (requires surf.(basesurf).isoclus)
+%  .doclusid         [1x1]  true (requires surf.isoclus)
 %  .isocluscolor     [1x2]  default = [1 1 1]
 %  .isocluslinewidth [1x1]  default = 2
 %  .isocluslinestyle '1xN'  default = '-'
@@ -85,6 +85,9 @@ if ~isfield(cfg,'thres')
 end
 if numel(cfg.thres) == 1
   cfg.thres = [-abs(cfg.thres) abs(cfg.thres)];
+end
+if ~isfield(cfg,'subthres')
+  cfg.subthres = false;
 end
 if ~isfield(cfg,'caxis')
   if numel(unique(numvals)) < 2 % if it's binary values
@@ -228,24 +231,28 @@ end
 
 %% Isocluster contours
 if ~isfield(cfg,'isocluscolor')
-  cfg.isocluscolor = [1 1 1];
+  cfg.isocluscolor = repmat([1 1 1],numel(surf.isoclus),1);
 end
-if ~isfield(cfg,'isocurvlinewidth')
+if ~isfield(cfg,'isocluslinewidth')
   cfg.isocluslinewidth = 2;
 end
-if ~isfield(cfg,'isocurvlinestyle')
+if ~isfield(cfg,'isocluslinestyle')
   cfg.isocluslinestyle = '-';
 end
 if isfield(surf,'isoclus') && ~(isfield(cfg,'doisoclus') && ~cfg.doisoclus)
   hold on
   H.contour_isoclus = hggroup;
-  for g = 1:numel(surf.isoclus)
-    xyz = surf.isoclus(g).xyz;
-    plot3(xyz(:,1), xyz(:,2), xyz(:,3), 'color',cfg.isocluscolor, ...
-      'linestyle',cfg.isocluslinestyle,'linewidth',cfg.isocluslinewidth, ...
-      'Parent',H.contour_isoclus)
+  for c = 1:numel(surf.isoclus)
+    for g = 1:numel(surf.isoclus(c).group)
+      xyz = surf.isoclus(c).group(g).xyz;
+      plot3(xyz(:,1), xyz(:,2), xyz(:,3), 'color',cfg.isocluscolor(c,:), ...
+        'linestyle',cfg.isocluslinestyle,'linewidth',cfg.isocluslinewidth, ...
+        'Parent',H.contour_isoclus)
+    end
   end
   hold off
 end
+%%
+
 
 end
