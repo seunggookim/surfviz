@@ -13,6 +13,7 @@ Download/fetch the package and add all subdirectories to MATLAB path:
 ```Matlab
 addpath(genpath(DIRECTORY_WHERE_YOU_SAVED_FILES))
 ```
+Replace "DIRECTORY_WHERE_YOU_SAVED_FILES" with an actual path (e.g., '/Users/me/Documents/MATLAB/surfviz/').
 
 ## Demo
 ```Matlab
@@ -57,8 +58,8 @@ Or perhaps the HCP-MMP atlas ([projected on fsaverage](https://figshare.com/arti
 ```Matlab
 fsavg = fsss_read_all_FS_surfs('fsaverage');
 labels = {};
-[~, labels{1}, cot] = read_annotation( 'lh.HCP-MMP1.annot', 0 );
-[~, labels{2}, cot] = read_annotation( 'rh.HCP-MMP1.annot', 0 );
+[~, labels{1}, cot] = read_annotation('lh.HCP-MMP1.annot', 0);
+[~, labels{2}, cot] = read_annotation('rh.HCP-MMP1.annot', 0);
 fsavg = fsss_isoclus(fsavg, labels); % this takes a while for granular annotations
 fsss_view(fsavg, fsavg.THNS, struct('colormap',gray, 'isocluslinewidth',1,'isocluscolor',cot.table(:,1:3)/256))
 ```
