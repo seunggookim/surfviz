@@ -53,7 +53,7 @@ fsss_view(surfs, surfs.THNS)
 ```
 ![](https://github.com/solleo/surfviz/blob/master/images/demo5.png)
 
-Or perhaps HCP-MMP atlas ([projected on fsaverage](https://figshare.com/articles/HCP-MMP1_0_projected_on_fsaverage/3498446))?
+Or perhaps the HCP-MMP atlas ([projected on fsaverage](https://figshare.com/articles/HCP-MMP1_0_projected_on_fsaverage/3498446))?
 ```Matlab
 fsavg = fsss_read_all_FS_surfs('fsaverage');
 labels = {};
