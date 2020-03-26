@@ -63,7 +63,7 @@ labels = {};
 fsavg = fsss_isoclus(fsavg, labels); % this takes a while for granular annotations
 fsss_view(fsavg, fsavg.THNS, struct('colormap',gray, 'isocluslinewidth',1,'isocluscolor',brewermap(max(id
 ```
-![](https://github.com/solleo/surfviz/blob/master/images/.png)
+![](https://github.com/solleo/surfviz/blob/master/images/demo6.png)
 
 See documentation for more information:
 ```Matlab
