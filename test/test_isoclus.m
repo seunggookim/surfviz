@@ -57,4 +57,7 @@ labels = {};
 [~, labels{2}, cot] = read_annotation( '/Users/sol/fsaverage/label/rh.HCP-MMP1.annot', 0 );
 fsavg = fsss_isoclus(fsavg, labels); % this takes a while for granular annotations
 %%
-fsss_view(fsavg, fsavg.THNS, struct('layout','2x4','colormap',gray, 'isocluslinewidth',1,'isocluscolor',cot.table(:,1:3)/256))
+gray256=gray(256);
+fsss_view(fsavg, fsavg.THNS, struct('layout','2x4','colormap',gray256(65:end,:), 'isocluslinewidth',1,'isocluscolor',cot.table(:,1:3)/256))
+%%
+
