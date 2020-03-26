@@ -57,8 +57,8 @@ Or perhaps the HCP-MMP atlas ([projected on fsaverage](https://figshare.com/arti
 ```Matlab
 fsavg = fsss_read_all_FS_surfs('fsaverage');
 labels = {};
-[~, labels{1}, ~] = read_annotation( '/Users/sol/fsaverage/label/lh.HCP-MMP1.annot', 0 );
-[~, labels{2}, ~] = read_annotation( '/Users/sol/fsaverage/label/rh.HCP-MMP1.annot', 0 );
+[~, labels{1}, ~] = read_annotation( 'lh.HCP-MMP1.annot', 0 );
+[~, labels{2}, ~] = read_annotation( 'rh.HCP-MMP1.annot', 0 );
 fsavg = fsss_isoclus(fsavg, labels); % this takes a while for granular annotations
 ```
 ![](https://github.com/solleo/surfviz/blob/master/images/demo6.png)
