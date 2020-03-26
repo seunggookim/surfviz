@@ -53,7 +53,14 @@ fsss_view(surfs, surfs.THNS)
 ```
 ![](https://github.com/solleo/surfviz/blob/master/images/demo5.png)
 
-Or perhaps HCP-MMP atlas?
+Or perhaps HCP-MMP atlas ()?
+```Matlab
+fsavg = fsss_read_all_FS_surfs('fsaverage');
+labels = {};
+[~, labels{1}, ~] = read_annotation( '/Users/sol/fsaverage/label/lh.HCP-MMP1.annot', 0 );
+[~, labels{2}, ~] = read_annotation( '/Users/sol/fsaverage/label/rh.HCP-MMP1.annot', 0 );
+fsavg = fsss_isoclus(fsavg, labels); % this takes a while for granular annotations
+```
 ![](https://github.com/solleo/surfviz/blob/master/images/demo6.png)
 
 See documentation for more information:
