@@ -53,7 +53,7 @@ fsss_view(surfs, surfs.THNS)
 ```
 ![](https://github.com/solleo/surfviz/blob/master/images/demo5.png)
 
-And perhaps HCP-MMP atlas?
+Or perhaps HCP-MMP atlas?
 ![](https://github.com/solleo/surfviz/blob/master/images/demo6.png)
 
 See documentation for more information:
