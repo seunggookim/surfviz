@@ -245,9 +245,11 @@ if isfield(surf,'isoclus') && ~(isfield(cfg,'doisoclus') && ~cfg.doisoclus)
   for c = 1:numel(surf.isoclus)
     for g = 1:numel(surf.isoclus(c).group)
       xyz = surf.isoclus(c).group(g).xyz;
+      if ~isnan(cfg.isocluscolor(c,:))
       plot3(xyz(:,1), xyz(:,2), xyz(:,3), 'color',cfg.isocluscolor(c,:), ...
         'linestyle',cfg.isocluslinestyle,'linewidth',cfg.isocluslinewidth, ...
         'Parent',H.contour_isoclus)
+      end
     end
   end
   hold off

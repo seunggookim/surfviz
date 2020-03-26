@@ -443,6 +443,9 @@ for iAxes = 1:numel(cfg.hemis)
     cfg.mask = cfg.masks{hemi};
     cfg.curv = surfs.WHITECURV{hemi};
   end
+  if isfield(cfg, 'isocluscolors') % a unique color table for each hemi
+    cfg.isocluscolor = cfg.isocluscolors{hemi};
+  end
   [h, cfg] = view_surfdata(surf2show, data2show, cfg);
   if cfg.isinteger
     h.oversurf.FaceColor = 'flat';
