@@ -11,7 +11,7 @@ MATLAB codes for visualization of surface-mapped scalar values. Largely inspired
 ## Install
 Download/fetch the package and add all subdirectories to MATLAB path:
 ```Matlab
->>> addpath(genpath(DIRECTORY_WHERE_YOU_SAVED_FILES))
+addpath(genpath(DIRECTORY_WHERE_YOU_SAVED_FILES))
 ```
 
 ## Demo
@@ -55,7 +55,7 @@ fsss_view(surfs, surfs.THNS)
 
 See documentation for more information:
 ```Matlab
->>> doc fsss_view
+doc fsss_view
 ```
 
 (cc) Seung-Goo Kim, 2019-2020.
