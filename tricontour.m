@@ -1,7 +1,21 @@
 function [hc, contour] = tricontour(surf, val, levels, draw)
-% plots linear interpolated contours on a 2D/3D triangulated suraface.
+% plots/creates linear interpolated contours on a 2D/3D trisurface.
 %
-% [hc, contour]=tricontour(surf, val, levels)
+% [USAGE]
+% tricontour(surf, val)
+% [hc] = tricontour(surf, val, levels)
+% [hc, contour] = tricontour(surf, val, levels, draw)
+%
+% [INPUT]
+% surf   (1x1)  triangular mesh structure with .vertices and .faces fields
+% val    [1xV]  vertex-mapped values
+% levels [1xN]  level(s) to make isocontours (default: 5-pt linear spacing)
+% draw   [1x1]  true to draw (default) | false to suppress
+%
+% [OUTPUT]
+% hc      (1x1)  group object to handle contour line series
+% contour (1xK)  structure of which .contour(c).group(g).xyz contains
+%                x,y,z-coordinates of g-th contour of c-th level
 %
 % This function is based on FT_TRIPLOT() of the FIELDTRIP package
 % (see http://www.ru.nl/neuroimaging/fieldtrip).
@@ -9,54 +23,50 @@ function [hc, contour] = tricontour(surf, val, levels, draw)
 % Improvement is to form groups of edges so that MATLAB can handle them
 % x180+ faster (e.g., 100k line obj [14 s] vs. 200 line obj, [0.075 s])
 %
-% Instead, now it takes about 3 sec to form line groups before drawing. 
-% But this computation can be avoided by using the "contour" variable 
-% itself. This is particularly useful if you need to draw same contours
-% (i.e., isocurvature contours of the template surfaces) over and over 
-% again for various views.
+% Instead, now it takes about 3 sec to form line groups (connecting edges)
+% before drawing. But this computation needs to be done only once when 
+% visualizing multiple views of the same surface/data.
 %
-% This version is included in https://github.com/solleo/surfviz
+% (cc) 2019-2020, sgKIM. mailto://solleo@gmail.com
+% This is distributed from https://github.com/solleo/surfviz
 %
 % SEE ALSO: FSSS_VIEW, FT_TRIPLOT, FSSS_READ_ALL_FS_SURFS
-%
-% (cc) 2020, sgKIM, solleo@gmail.com
 
-% Copyright (C) 2001=2006, Robert Oostenveld
-%
-% This file is part of FieldTrip, see http://www.ru.nl/neuroimaging/fieldtrip
-% for the documentation and details.
-%
-%    FieldTrip is free software: you can redistribute it and/or modify
-%    it under the terms of the GNU General Public License as published by
-%    the Free Software Foundation, either version 3 of the License, or
-%    (at your option) any later version.
-%
-%    FieldTrip is distributed in the hope that it will be useful,
-%    but WITHOUT ANY WARRANTY; without even the implied warranty of
-%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%    GNU General Public License for more details.
-%
-%    You should have received a copy of the GNU General Public License
-%    along with FieldTrip. If not, see <http://www.gnu.org/licenses/>.
-%
-% $Id: triplot.m 6321 2012-08-03 16:02:37Z roevdmei $
+%{
+Creative Commons Legal Code
+
+CC0 1.0 Universal
+
+    CREATIVE COMMONS CORPORATION IS NOT A LAW FIRM AND DOES NOT PROVIDE
+    LEGAL SERVICES. DISTRIBUTION OF THIS DOCUMENT DOES NOT CREATE AN
+    ATTORNEY-CLIENT RELATIONSHIP. CREATIVE COMMONS PROVIDES THIS
+    INFORMATION ON AN "AS-IS" BASIS. CREATIVE COMMONS MAKES NO WARRANTIES
+    REGARDING THE USE OF THIS DOCUMENT OR THE INFORMATION OR WORKS
+    PROVIDED HEREUNDER, AND DISCLAIMS LIABILITY FOR DAMAGES RESULTING FROM
+    THE USE OF THIS DOCUMENT OR THE INFORMATION OR WORKS PROVIDED
+    HEREUNDER.
+%}
 
 pnt = surf.vertices;
 tri = surf.faces;
-absmax = max(abs([min(val) max(val)]));
 if ~exist('levels','var')
-  levels = linspace(-absmax,absmax,21);
+  absmax = max(abs([min(val) max(val)]));
+  levels = linspace(-absmax,absmax,5);
 end
 if ~exist('draw','var')
   draw = true;
 end
+DEBUG = false;
 
+%% LINES FROM FT_TRIPLOT (FROM HERE)========================================
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % compute contours for 2D or 3D triangulation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-fprintf('Computing contour..')
-tic
+
+if DEBUG
+  tic; fprintf('Computing contour..')
+end
 % map values onto vertex list
 triangle_val = val(tri);
 % find min value for each triangle
@@ -93,6 +103,10 @@ for cnt_indx=1:length(levels)
   % remember the details for external reference
   contour(cnt_indx).level = cnt;
   contour(cnt_indx).n     = counter;
+  if size(pnt,2) == 2 % 2-D triangular mesh
+    intersetc1 = [intersect1 zeros(size(intersect1,1),1)];
+    intersetc2 = [intersect2 zeros(size(intersect2,1),1)];
+  end  
   contour(cnt_indx).intersect1 = intersect1;
   contour(cnt_indx).intersect2 = intersect2;
 end
@@ -106,24 +120,23 @@ for cnt_indx=1:length(levels)
   intersect2 = [intersect2; contour(cnt_indx).intersect2];
   cntlevel   = [cntlevel; ones(contour(cnt_indx).n,1) * levels(cnt_indx)];
 end
-
-X = [intersect1(:,1) intersect2(:,1)]';
-Y = [intersect1(:,2) intersect2(:,2)]';
-C = [cntlevel(:)     cntlevel(:)]';
-if size(pnt,2)>2
-  Z = [intersect1(:,3) intersect2(:,3)]';
-else
-  Z = zeros(2, length(cntlevel));
+if DEBUG
+  toc
 end
-toc
+% LINES FROM FT_TRIPLOT (UNTIL HERE)=======================================
 
-tic
-fprintf('Connecting edges...')
-
+%% Connecting edges
+if DEBUG
+  tic; fprintf('Connecting edges...')
+end
 for cnt_indx = 1:length(levels)
-  % ignore tiny differences from interpolation:
-  p1 = round(contour(cnt_indx).intersect1*1000)/1000;
-  p2 = round(contour(cnt_indx).intersect2*1000)/1000;
+  p1 = contour(cnt_indx).intersect1;
+  p2 = contour(cnt_indx).intersect2;
+  
+  % ignore tiny differences from interpolation
+  scale = 10^round(log10(mean(range(p1)))+1);
+  p1 = round(p1*scale)/scale;
+  p2 = round(p2*scale)/scale;
   verts = unique([p1;p2],'rows');
   [~, v1] = ismember(p1, verts, 'rows');
   [~, v2] = ismember(p2, verts, 'rows');
@@ -192,8 +205,11 @@ for cnt_indx = 1:length(levels)
     end
   end
 end
-toc % 2.98 sec!
+if DEBUG
+  toc % 2.98 sec for fsaverage
+end
 
+%% Draw contours (or not)
 if draw
   tic
   fprintf('Drawing contours...');
