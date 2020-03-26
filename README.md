@@ -61,9 +61,9 @@ labels = {};
 [~, labels{1}, cot] = read_annotation('lh.HCP-MMP1.annot', 0);
 [~, labels{2}, cot] = read_annotation('rh.HCP-MMP1.annot', 0);
 fsavg = fsss_isoclus(fsavg, labels); % this takes a while for granular annotations
-fsss_view(fsavg, fsavg.THNS, struct('colormap',gray, 'isocluslinewidth',1,'isocluscolor',cot.table(:,1:3)/256))
+fsss_view(fsavg, fsavg.THNS, struct('colormap',gray, 'isocluslinewidth',1,'isocluscolor',brewermap(max(id
 ```
-![](https://github.com/solleo/surfviz/blob/master/images/demo6.png)
+![](https://github.com/solleo/surfviz/blob/master/images/.png)
 
 See documentation for more information:
 ```Matlab
