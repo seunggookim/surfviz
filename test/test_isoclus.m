@@ -53,8 +53,8 @@ view_surfdata(lh, thns, struct('basecolormap',[0 0 0; 1 1 1], 'caxis',[1 4], 'co
 %%
 fsavg = fsss_read_all_FS_surfs('fsaverage');
 labels = {};
-[verts, labels{1}, cot] = read_annotation( '/Users/sol/fsaverage/label/lh.HCP-MMP1.annot', 0 );
-[verts, labels{2}, cot] = read_annotation( '/Users/sol/fsaverage/label/rh.HCP-MMP1.annot', 0 );
+[~, labels{1}, cot] = read_annotation( '/Users/sol/fsaverage/label/lh.HCP-MMP1.annot', 0 );
+[~, labels{2}, cot] = read_annotation( '/Users/sol/fsaverage/label/rh.HCP-MMP1.annot', 0 );
 fsavg = fsss_isoclus(fsavg, labels); % this takes a while for granular annotations
 %%
-fsss_view(fsavg, fsavg.THNS, struct('layout','2x2','colormap',gray, 'isocluslinewidth',2,'isocluscolor',cot.table(:,1:3)/256))
+fsss_view(fsavg, fsavg.THNS, struct('layout','2x4','colormap',gray, 'isocluslinewidth',1,'isocluscolor',cot.table(:,1:3)/256))
