@@ -52,15 +52,14 @@ figure
 view_surfdata(lh, thns, struct('basecolormap',[0 0 0; 1 1 1], 'caxis',[1 4], 'colormap',gray, 'doisocurv',0,'figurecolor','w','doisoclus',1,'isocluslinewidth',2,'isocluscolor',cot.table(:,1:3)/256))
 %%
 fsavg = fsss_read_all_FS_surfs('fsaverage');
-labels = {};
-[~, labels{1}, cot_l] = read_annotation( '/Users/sol/fsaverage/label/lh.HCP-MMP1.annot', 0 );
-[~, labels{2}, cot_r] = read_annotation( '/Users/sol/fsaverage/label/rh.HCP-MMP1.annot', 0 );
-[fsavg,cot] = fsss_isoclus(fsavg, labels, struct('cots',{{cot_l, cot_r}})); % this takes a while for granular annotations
+labels = {}; cots = {};
+[~, labels{1}, cots{1}] = read_annotation('/Users/sol/fsaverage/label/lh.HCP-MMP1.annot', 0);
+[~, labels{2}, cots{2}] = read_annotation('/Users/sol/fsaverage/label/rh.HCP-MMP1.annot', 0);
+[fsavg,cot] = fsss_isoclus(fsavg, labels, struct('cots',{cots})); % this takes a while for granular annotations
 %%
 figure
 view_surfdata(lh, thns, struct('basecolormap',[0 0 0; 1 1 1], 'caxis',[1 4], 'colormap',gray, 'doisocurv',0,'figurecolor','w','doisoclus',1,'isocluslinewidth',2,'isocluscolor',cot))
 %%
-gray256=gray(256);
-fsss_view(fsavg, fsavg.THNS, struct('layout','2x4','colormap',gray256(65:end,:), 'isocluslinewidth',1,'isocluscolors',{cot}))
+fsss_view(fsavg, fsavg.THNS, struct('layout','2x2','colormap',gray, 'isocluslinewidth',1,'isocluscolors',{cot}))
 %%
 

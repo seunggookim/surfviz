@@ -33,7 +33,7 @@ for s = 1:2
       if sum(idx_l)
         lut{s}(i,:) = cot(idx_l,1:3)/255;
       else
-        lut{s}(i,:) = [nan nan nan];
+        lut{s}(i,:) = [nan nan nan]; % medial walls
       end
     end
     
