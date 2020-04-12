@@ -230,7 +230,8 @@ if isfield(surf,'isocurv') && ~(isfield(cfg,'doisocurv') && ~cfg.doisocurv)
 end
 
 %% Isocluster contours
-if ~isfield(cfg,'isocluscolor')
+
+if isfield(surf,'isoclus') && ~isfield(cfg,'isocluscolor')
   cfg.isocluscolor = repmat([1 1 1],numel(surf.isoclus),1);
 end
 if ~isfield(cfg,'isocluslinewidth')

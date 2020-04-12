@@ -76,8 +76,10 @@ triangle_max = max(triangle_val, [], 2);
 
 for cnt_indx=1:length(levels)
   cnt = levels(cnt_indx);
-  % find triangles with [min <= current level <= max]
-  use = cnt>=triangle_min & cnt<=triangle_max;
+  % find triangles with [min <= current level <= max] (triangles 0=0=0?!)
+%   use = cnt>=triangle_min & cnt<=triangle_max;
+  % find triangles with [min < current level < max]
+  use = (triangle_min < cnt) & (cnt < triangle_max);
   % initialize
   counter = 0;
   intersect1 = [];

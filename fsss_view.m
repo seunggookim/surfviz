@@ -16,6 +16,9 @@ function [H, cfg] = fsss_view (surfs, data, cfg)
 %     | [Nx1] a vector from the left and right (in this order) hemispheres
 %
 % cfg   (1x1) structure to configure options (optional):
+% - figure
+% .figurehandle [1x1] default = creating a new figure
+%
 % - surfaces layout
 %  .basesurf '1xN'  'INFL' (default) | 'WHITE' | 'PIAL'
 %                   ('SMOOTHWM' | 'SPHERE' | 'SUPTEMP.*' if in surfs)
@@ -154,7 +157,7 @@ if ~exist('cfg','var'), cfg=[]; end
 %% -- Input dimension
 % Handle concatenated vector:
 if ~iscell(data)
-  nverts = [size(surf.WHITE{1}.vertices,1), size(surf.WHITE{1}.vertices,2)];
+  nverts = [size(surfs.WHITE{1}.vertices,1), size(surfs.WHITE{2}.vertices,1)];
   if length(data) == sum(nverts)
     warning('data is assumed to be bi-hemi.')
     data = {reshape(data(1:nverts(1)),[],1), ...
@@ -415,7 +418,12 @@ if cfg.subthres
 end
 
 %% -- Initialize figure
-figure
+if ~isfield(cfg,'figurehandle')
+  figure
+else
+  figure(cfg.figurehandle)
+  clf
+end
 set(gcf, 'position', cfg.figureposition);
 if isfield(cfg,'fname_png') % if fname_png is given, make it invisible
   set(gcf,'visible','off')

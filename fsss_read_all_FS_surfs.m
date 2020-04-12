@@ -679,8 +679,8 @@ SURF.edge_length.white = [mean(compute_edge_length(WHITE{1})), mean(compute_edge
 %% Isocurvature (2020-03-24)
 if ~isempty(cfg.isocurv)
   for s = 1:2
-    [~,c] = tricontour(SURF.(cfg.isocurv){s}, SURF.WHITECURV{s}, ...
-      0, false);
+    [~,c] = tricontour(SURF.(cfg.isocurv){s}, ...
+      SURF.WHITECURV{s}.*SURF.ANNOT{s}.cortex, 0, false);
     SURF.(cfg.isocurv){s}.isocurv = c.group;
   end
 end
