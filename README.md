@@ -6,7 +6,7 @@ MATLAB codes for visualization of surface-mapped scalar values. Largely inspired
 - Various FreeSurfer (http://freesurfer.net/) surface models (white, pial, inflated, semi-inflated, sphere) can be used. 
 - OpenGL is required for transparent overlay. Otherwise binary curvature won't be rendered.
 - Multiple figures can be created in the background (MATLAB won't bother you during batch processing).
-- (NEW) Quick (0.07 sec per `fsaverage` hemisphere) isocontour plotting using a modification of `ft_plot_topo3d()` from FieldTrip (http://www.fieldtriptoolbox.org/).
+- (NEW) Quick (0.07 sec per `fsaverage` hemisphere) isocontour plotting using an isocontour algorithm from `ft_plot_topo3d()` from FieldTrip (http://www.fieldtriptoolbox.org/) and an edge-connecting algorithm.
 
 ## Install
 Download/fetch the package and add all subdirectories to MATLAB path:
