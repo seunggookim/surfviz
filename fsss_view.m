@@ -191,6 +191,13 @@ if isfield(cfg,'basesurf') && contains(cfg.basesurf,'SUPTEMP')
   end
 end
 
+%% -- FLAT surfaces
+if isfield(cfg,'basesurf') && contains(cfg.basesurf,'_flat')
+  if ~isfield(cfg,'layout')
+    cfg.layout = '1x2flat';
+  end
+end
+
 %% -- Color scheme
 if isfield(cfg,'colorscheme')
   switch cfg.colorscheme
@@ -237,7 +244,7 @@ if ~isfield(cfg,'views')
       cfg.views = {[-90 0],[90 0]};
     case '1x2oblq'
       cfg.views = {[-120 10],[120 10]};
-    case '1x2stmp'
+    case {'1x2stmp','1x2flat'}
       cfg.views = {[0 90],[0 90]};
   end
 end
@@ -249,8 +256,10 @@ if ~isfield(cfg,'hemis')
       cfg.hemis = [1 1 2 2];
     case '2x2'
       cfg.hemis = [1 2 1 2];
-    case {'1x2','1x2big','1x2oblq','1x2stmp'}
-      cfg.hemis = [1 2];
+    otherwise
+      if contains(cfg.layout, '1x2')
+        cfg.hemis = [1 2];
+      end
   end
 end
 if ~isfield(cfg,'axes')
@@ -277,7 +286,7 @@ if ~isfield(cfg,'axes')
       cfg.surfaxes.y(1:2) = cfg.surfaxes.y(1:2)+0.06;
       cfg.histaxes = {[.08 .08 .23 .15],[.73 .08 .23 .15]};
       cfg.colorbaraxes = [.5-.15 .20 .3 .05];
-    case {'1x2big','1x2oblq'}
+    case {'1x2big','1x2oblq','1x2flat'}
       cfg.surfaxes = axeslayout([1 2],[.02 .02 0 0],[.02, .02, .0, .0]);
       cfg.surfaxes.y = cfg.surfaxes.y + 0.11;
       cfg.histaxes = {[.05 .07 .25 .15],[.7 .07 .25 .15]};
@@ -299,7 +308,7 @@ if ~isfield(cfg,'figureposition')
       cfg.figureposition = [5   694   450   220];
     case '2x2'
       cfg.figureposition = [5   694   450   365];
-    case {'1x2big','1x2oblq'}
+    case {'1x2big','1x2oblq','1x2flat'}
       cfg.figureposition = [5   694   900   415];
     case '1x2stmp'
       cfg.figureposition = [5   694   250   360];
