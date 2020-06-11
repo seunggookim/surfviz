@@ -68,14 +68,18 @@ function [H, cfg] = fsss_view (surfs, data, cfg)
 % -- isocurvature contours:
 %  .doisocurv        [1x1]  true (requires surf.(basesurf).isocurv)
 %                           | false (default)
-%  .isocurvcolor     [1x2]  default = [0 0 0]
+%  .isocurvcolor     [1x3]  default = [0 0 0]
 %  .isocurvlinewidth [1x1]  default = 0.5
 %  .isocurvlinestyle '1xN'  default = '-'
 % -- cluster contours:
-%  .doclusid         [1x1]  true (requires surf.(basesurf).isoclus) ????
-%  .isocluscolor     [1x2]  default = [1 1 1]
+%  .doclusid         [1x1]  true (requires surf.(basesurf).isoclus)
+%                           | false (default)
+%  .isocluscolor     [1x3]  default = [1 1 1]
 %  .isocluslinewidth [1x1]  default = 2
 %  .isocluslinestyle '1xN'  default = '-'
+% -- outerboundary contours:
+%  .outerboundary      [1x1]  true | false (default)
+%  .outerboundarycolor [1x3]  default = [0 0 0]
 %
 % - lighting
 %  .camlight    [1x1]  {true} | false
@@ -149,6 +153,7 @@ CC0 1.0 Universal
 2020-02-23: new color schemes: "brightspectral", "brightparula",
 "yellowblue"
 2020-03-24: isocontour:edge-connectig:0.07 sec/hemi!
+2020-06-03: outerboundary
 %}
 
 %% C O N F I G ============================================================
