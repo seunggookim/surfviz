@@ -1,18 +1,18 @@
 function [hc, contour] = tricontour(surf, val, levels, draw)
 % plots/creates linear interpolated contours on a 2D/3D trisurface.
 %
-% [USAGE]
+% USAGE
 % tricontour(surf, val)
 % [hc] = tricontour(surf, val, levels)
 % [hc, contour] = tricontour(surf, val, levels, draw)
 %
-% [INPUT]
+% INPUT
 % surf   (1x1)  triangular mesh structure with .vertices and .faces fields
 % val    [1xV]  vertex-mapped values
 % levels [1xN]  level(s) to make isocontours (default: 5-pt linear spacing)
 % draw   [1x1]  true to draw (default) | false to suppress
 %
-% [OUTPUT]
+% OUTPUT
 % hc      (1x1)  group object to handle contour line series
 % contour (1xK)  structure of which .contour(c).group(g).xyz contains
 %                x,y,z-coordinates of g-th contour of c-th level

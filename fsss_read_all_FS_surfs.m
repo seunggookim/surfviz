@@ -665,6 +665,8 @@ for j=1:numel(fieldnames)
 end
 
 %% OUTPUT
+SURF.subject = sesid;
+SURF.subjects_dir = subjects_dir;
 SURF.SULC = SULC;
 SURF.WHITECURV = WHITECURV;
 SURF.PIALCURV = PIALCURV;

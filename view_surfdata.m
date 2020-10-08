@@ -27,14 +27,19 @@ function [H, cfg] = view_surfdata (surf, data, cfg)
 % -- isocurvature contours:
 %  .doisocurv        [1x1]  true (requires surf.isocurv)
 %                           | false (default)
-%  .isocurvcolor     [1x2]  default = [0 0 0]
+%  .isocurvcolor     [1x3]  default = [0 0 0]
 %  .isocurvlinewidth [1x1]  default = 0.5
 %  .isocurvlinestyle '1xN'  default = '-'
 % -- cluster contours:
-%  .doclusid         [1x1]  true (requires surf.isoclus)
-%  .isocluscolor     [1x2]  default = [1 1 1]
+%  .doclusid         [1x1]  true (requires surf.isoclus) | false (default)
+%  .isocluscolor     [1x3]  default = [1 1 1]
 %  .isocluslinewidth [1x1]  default = 2
 %  .isocluslinestyle '1xN'  default = '-'
+% -- outerboundary contours:
+%  .doouterboundary        [1x1]  true | false (default)
+%  .outerboundarycolor     [1x3]  default = [0 0 0]
+%  .outerboundarylinewidth [1x1]  default = 2
+%  .outerboundarylinestyle '1xN'  default = '-'
 %
 % - lighting
 %  .camlight    [1x1]  true (default) | false
@@ -189,25 +194,25 @@ if cfg.camlight
   end
 end
 
-
-%% Cluster contours
-if isfield(cfg,'clusid')
-  if ~isfield(cfg,'clusidlinewidth')
-    cfg.clusidlinewidth = 0.5;
-  end
-  if ~isfield(cfg,'clusidlinestyle')
-    cfg.clusidlinestyle = '-';
-  end
-  if ~isfield(cfg,'clusidcolor')
-    cfg.clusidcolor = ones(3,max(cfg.clusid));
-  end
-  for c=1:max(cfg.clusid) % for each cluster ID
-    [~,H.contour_clusid(c)] = ft_triplot(V, F, double(cfg.clusid==c), ...
-      'contour_bw', 1e-10);
-    set(H.contour_clusid(c), 'color',cfg.clusidcolor(c,:), ...
-      'linewidth',cfg.clusidlinewidth, 'linestyle',cfg.clusidlinestyle);
-  end
-end
+%% Obsoleted:
+% %% Cluster contours
+% if isfield(cfg,'clusid')
+%   if ~isfield(cfg,'clusidlinewidth')
+%     cfg.clusidlinewidth = 0.5;
+%   end
+%   if ~isfield(cfg,'clusidlinestyle')
+%     cfg.clusidlinestyle = '-';
+%   end
+%   if ~isfield(cfg,'clusidcolor')
+%     cfg.clusidcolor = ones(3,max(cfg.clusid));
+%   end
+%   for c=1:max(cfg.clusid) % for each cluster ID
+%     [~,H.contour_clusid(c)] = ft_triplot(V, F, double(cfg.clusid==c), ...
+%       'contour_bw', 1e-10);
+%     set(H.contour_clusid(c), 'color',cfg.clusidcolor(c,:), ...
+%       'linewidth',cfg.clusidlinewidth, 'linestyle',cfg.clusidlinestyle);
+%   end
+% end
 
 
 %% Isocurvature contours
@@ -233,7 +238,6 @@ if isfield(surf,'isocurv') && ~(isfield(cfg,'doisocurv') && ~cfg.doisocurv)
 end
 
 %% Isocluster contours
-
 if isfield(surf,'isoclus')
   if ~isfield(cfg,'isocluscolor')
     cfg.isocluscolor = repmat([1 1 1], [numel(surf.isoclus),1]);
@@ -263,7 +267,31 @@ if isfield(surf,'isoclus') && ~(isfield(cfg,'doisoclus') && ~cfg.doisoclus)
   end
   hold off
 end
-%%
 
+
+%% Outerboundary contours
+if ~isfield(cfg,'outerboundarycolor')
+  cfg.outerboundarycolor = [0 0 0];
+end
+if ~isfield(cfg,'outerboundarylinewidth')
+  cfg.outerboundarylinewidth = 0.5;
+end
+if ~isfield(cfg,'outerboundarylinestyle')
+  cfg.outerboundarylinestyle = '-';
+end
+if isfield(surf,'outerboundary') && ~(isfield(cfg,'doouterboundary') ...
+    && ~cfg.doouterboundary)
+  hold on
+  H.contour_outerboundary = hggroup;
+  for g = 1:numel(surf.outerboundary)
+    xyz = surf.outerboundary.group(g).xyz;
+    plot3(xyz(:,1), xyz(:,2), xyz(:,3), ...
+      'color',cfg.outerboundarycolor, ...
+      'linestyle',cfg.outerboundarylinestyle, ...
+      'linewidth',cfg.outerboundarylinewidth, ...
+      'Parent',H.contour_outerboundary)
+  end
+  hold off
+end
 
 end
