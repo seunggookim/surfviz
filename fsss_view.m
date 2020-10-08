@@ -305,7 +305,7 @@ if ~isfield(cfg,'figureposition')
       cfg.figureposition = [5   694   250   360];
   end
   if isunix
-    cfg.figureposition(1) = 1922;
+%     cfg.figureposition(1) = 1922;
   end
 end
 
@@ -353,6 +353,9 @@ elseif ischar(cfg.caxis)
     case 'full'
       cfg.caxis = [-max(abs(numvals)) max(abs(numvals))];
   end
+end
+if ~diff(cfg.caxis)
+  cfg.caxis(2) = Inf;
 end
 
 %% -- Overlay values: integer or not?

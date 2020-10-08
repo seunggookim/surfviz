@@ -139,6 +139,9 @@ else
     'edgecolor', 'none', 'FaceVertexCData', img_base_rgb, ...
     'ambientstrength',0.4, 'diffusestrength',0.8, 'specularstrength',0);
 end
+if isfield(cfg,'basesurfcolor')
+  H.basesurf.FaceColor = cfg.basesurfcolor;
+end
 % see CAT_SURF_RENDER for a nice exmaple of PATCH options
 if ~isfield(cfg,'facealpha'), cfg.facealpha = 1; end
 H.oversurf = patch('faces',F, 'vertices',V, 'facecolor','interp', ....
@@ -231,8 +234,13 @@ end
 
 %% Isocluster contours
 
-if isfield(surf,'isoclus') && ~isfield(cfg,'isocluscolor')
-  cfg.isocluscolor = repmat([1 1 1],numel(surf.isoclus),1);
+if isfield(surf,'isoclus')
+  if ~isfield(cfg,'isocluscolor')
+    cfg.isocluscolor = repmat([1 1 1], [numel(surf.isoclus),1]);
+  end
+  if numel(surf.isoclus) ~= size(cfg.isocluscolor,1)
+    cfg.isocluscolor = repmat(cfg.isocluscolor(1,:), [numel(surf.isoclus),1]);
+  end
 end
 if ~isfield(cfg,'isocluslinewidth')
   cfg.isocluslinewidth = 2;
