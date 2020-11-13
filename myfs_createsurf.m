@@ -33,7 +33,6 @@ if ~exist('read_surf','file')
   error('FreeSurfer matlab functions are not in path!')
 end
 
-
 hemis = {'lh.','rh.'};
 fnames_out = cellfun(@(x) fullfile(dname,'surf',[x surf2create]), hemis, ...
   'UniformOutput',0);
@@ -68,6 +67,7 @@ switch (surf2create)
       system(sprintf('mris_smooth -nw -n %i %s %s',...
         10, fnames_out{ihemi}, fnames_out{ihemi}));      
     end
+    
   otherwise
     error('[%s] surf2create=''%s'' NOT RECOGNIZED!',mfilename, surf2create)
 end
