@@ -207,7 +207,7 @@ if ~isfield(cfg,'isocurvlinestyle')
 end
 if isfield(surf,'isocurv') && ~(isfield(cfg,'doisocurv') && ~cfg.doisocurv)
   hold on
-  H.contour_isocurv = hggroup;
+  H.contour_isocurv = hggroup;   % to group LOTS of lines
   for g = 1:numel(surf.isocurv)
     xyz = surf.isocurv(g).xyz;
     plot3(xyz(:,1), xyz(:,2), xyz(:,3), 'color',cfg.isocurvcolor, ...
@@ -234,7 +234,7 @@ if ~isfield(cfg,'isocluslinestyle')
 end
 if isfield(surf,'isoclus') && ~(isfield(cfg,'doisoclus') && ~cfg.doisoclus)
   hold on
-  H.contour_isoclus = hggroup;
+  H.contour_isoclus = hggroup;  % to group LOTS of lines
   for c = 1:numel(surf.isoclus)
     for g = 1:numel(surf.isoclus(c).group)
       xyz = surf.isoclus(c).group(g).xyz;

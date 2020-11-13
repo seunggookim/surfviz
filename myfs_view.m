@@ -158,10 +158,7 @@ CC0 1.0 Universal
 %}
 
 %% P A T H ================================================================
-[mypath,~,~] = fileparts(mfilename('fullpath'));
-addpath(genpath(fullfile(mypath,'external')))
-addpath(fullfile(mypath,'utilities'))
-
+myfs_addpath()
 
 %% C O N F I G ============================================================
 if ~exist('cfg','var'), cfg=[]; end
