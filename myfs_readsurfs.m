@@ -9,7 +9,7 @@ function surfs  = myfs_readsurfs (subid, subjects_dir, cfg)
 % subjects_dir '1xN' directory where you have the subject directory
 % cfg          (1x1) configuration structure:
 % .surf  {1xN} surfaces to read. 
-%              DEFAULT: 'white','pial','inflated'
+%              DEFAULT: 'white','pial','inflated' 'smoothwm'
 %              OPTIONAL: 'sphere','mean','semiinflated', or any surface
 %              files in <surf> directory
 %
@@ -71,7 +71,7 @@ if ~exist('cfg','var')
   cfg = [];
 end
 if ~isfield(cfg,'surf')
-  cfg.surf = {'white','pial','inflated'};
+  cfg.surf = {'white','pial','inflated','smoothwm'};
 end
 if ~isfield(cfg,'meas')
   cfg.meas = {'thickness','curv'};
