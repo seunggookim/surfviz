@@ -1,8 +1,8 @@
 function surfs  = myfs_readsurfs (subid, subjects_dir, cfg)
-% reads multiple surfaces, maps, & annotations from FreeSurfer results.
+%MYFS_READSURFS reads multiple surfaces, maps, & annotations from FreeSurfer results.
 %
 % [USAGE]
-% surfs = fsss_readsurfs (subid, [subjects_dir], [cfg])
+% surfs = MYFS_READSURFS (subid, [subjects_dir], [cfg])
 %
 % [INPUT]
 % subid        '1xN' subject directory name

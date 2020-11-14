@@ -1,5 +1,5 @@
 function [H, cfg] = myfs_view (surfs, data, cfg)
-% visualizes scalar data on surfaces
+% visualizes scalar data on cortical surfaces
 %
 % [USAGE]
 % myfs_view (surfs, data)
@@ -343,7 +343,7 @@ if ~isfield(cfg,'masks')
   end
 end
 for hemi = 1:2
-  cfg.masks{hemi} = cfg.masks{hemi} & surfs.ANNOT{hemi}.cortex;
+  cfg.masks{hemi} = cfg.masks{hemi} & surfs.aparc{hemi}.cortex;
 end
 if islogical(data{1,1}) || islogical(data{1,1})
   data = {uint8(data{1}), uint8(data{2})};
@@ -388,24 +388,24 @@ if ~isfield(cfg,'isinterger')
 end
 
 %% -- Color map
-NUMCOLORLEVELS = 256;
+numcolorlevels = 256;
 if ~isfield(cfg,'subthres')
   cfg.subthres = 0;
 end
 if ~isfield(cfg,'colormap')
   if isequal(cfg.thres, [0 0])
-    cfg.colormap = flipud(brewermap(NUMCOLORLEVELS,'spectral'));
+    cfg.colormap = flipud(brewermap(numcolorlevels,'spectral'));
     cfg.figurecolor = 'w';
     cfg.basecolor = 'bright';
   else % thresholded
-    ind = linspace(cfg.caxis(1),cfg.caxis(2),NUMCOLORLEVELS);
-    NUMLEVELNEG = sum(ind <= cfg.thres(1));
-    NUMLEVELSUBTHR = sum(cfg.thres(1) < ind & ind < cfg.thres(2));
-    NUMLEVELPOS = sum(cfg.thres(2) <= ind);
+    ind = linspace(cfg.caxis(1),cfg.caxis(2),numcolorlevels);
+    numlevels_neg = sum(ind <= cfg.thres(1));
+    numlevels_subthr = sum(cfg.thres(1) < ind & ind < cfg.thres(2));
+    numlevels_pos = sum(cfg.thres(2) <= ind);
     cfg.colormap = [
-      flipud(sgcolormap('DBC3',NUMLEVELNEG));
-      0.35*ones(NUMLEVELSUBTHR,3);
-      sgcolormap('DRY',NUMLEVELPOS)];
+      flipud(sgcolormap('DBC3',numlevels_neg));
+      0.35*ones(numlevels_subthr,3);
+      sgcolormap('DRY',numlevels_pos)];
     cfg.figurecolor = 'k';
     cfg.basecolor = 'dark';
   end
@@ -413,15 +413,15 @@ else
   if ~isequal(cfg.thres, [0 0]) && (prod(cfg.caxis)<0)
     % if thresholded & divergent:
     givenmap = cfg.colormap;
-    NUMCOLORLEVELS = size(givenmap,1);
-    ind = linspace(cfg.caxis(1),cfg.caxis(2),NUMCOLORLEVELS);
-    NUMLEVELNEG = sum(ind <= cfg.thres(1));
-    NUMLEVELSUBTHR = sum(cfg.thres(1) < ind & ind < cfg.thres(2));
-    NUMLEVELPOS = sum(cfg.thres(2) <= ind);
+    numcolorlevels = size(givenmap,1);
+    ind = linspace(cfg.caxis(1),cfg.caxis(2),numcolorlevels);
+    numlevels_neg = sum(ind <= cfg.thres(1));
+    numlevels_subthr = sum(cfg.thres(1) < ind & ind < cfg.thres(2));
+    numlevels_pos = sum(cfg.thres(2) <= ind);
     cfg.colormap = [
-      givenmap(1:NUMLEVELNEG,:);
-      0.35*ones(NUMLEVELSUBTHR,3);
-      givenmap(end-NUMLEVELPOS+1:end,:)];
+      givenmap(1:numlevels_neg,:);
+      0.35*ones(numlevels_subthr,3);
+      givenmap(end-numlevels_pos+1:end,:)];
   end
   
   if ~isfield(cfg,'figurecolor')
@@ -439,7 +439,7 @@ switch cfg.basecolor
 end
 if cfg.subthres
   cfg.basecolormap = [.7 .7 .7; .9 .9 .9];
-  cfg.colormap = flipud(brewermap(NUMCOLORLEVELS,'spectral'));
+  cfg.colormap = flipud(brewermap(numcolorlevels,'spectral'));
   cfg.facealpha = 0.6;
   cfg.figurecolor = 'k';
 end
@@ -476,7 +476,7 @@ for iAxes = 1:numel(cfg.hemis)
     surf2show = surfs.(cfg.basesurf){hemi};
     data2show = data{hemi};
     cfg.mask = cfg.masks{hemi};
-    cfg.curv = surfs.whiteCURV{hemi};
+    cfg.curv = surfs.curv{hemi};
   end
   if isfield(cfg, 'isocluscolors') % a unique color table for each hemi
     cfg.isocluscolor = cfg.isocluscolors{hemi};
@@ -541,7 +541,8 @@ for hemi = 1:2
   end
   
   % color-code bars:
-  ind = zeroone(xi, cfg.caxis(1), cfg.caxis(2))*(size(cfg.colormap,1)-1);
+  ind = rescale(xi, 0, (size(cfg.colormap,1)-1), ...
+    'InputMin',cfg.caxis(1), 'InputMax', cfg.caxis(2) );
   ind = 1+floor(ind);
   rgb = cfg.colormap(ind,:) * 0.85; % a bit darker
   
@@ -645,7 +646,8 @@ if ~isempty(numvals)
     else
       [~, xi] = hist(numvals, numbins);
     end
-    ind = zeroone(xi, cfg.caxis(1), cfg.caxis(2))*(size(cfg.colormap,1)-1);
+    ind = rescale(xi, 0, (size(cfg.colormap,1)-1), ...
+      'InputMin',cfg.caxis(1), 'InputMax', cfg.caxis(2) );
     ind = 1+floor(ind);
     cfg.colormap = cfg.colormap(ind,:);
   end
@@ -703,7 +705,3 @@ end
 if ~nargout, clear H cfg; end
 
 end
-
-
-
-
