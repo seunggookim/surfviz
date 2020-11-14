@@ -1,8 +1,8 @@
 function surfs  = myfs_readsurfs (subid, subjects_dir, cfg)
-%MYFS_READSURFS reads multiple surfaces, maps, & annotations from FreeSurfer results.
+% reads multiple surfaces, maps, & annotations from FreeSurfer results.
 %
 % [USAGE]
-% surfs = MYFS_READSURFS (subid, [subjects_dir], [cfg])
+% surfs = fsss_readsurfs (subid, [subjects_dir], [cfg])
 %
 % [INPUT]
 % subid        '1xN' subject directory name
@@ -26,6 +26,10 @@ function surfs  = myfs_readsurfs (subid, subjects_dir, cfg)
 % .isocurv {1xN} surfaces to create .isocurv field (it may take time)
 %                DEFAULT: []
 %
+% .outerbnd {1xN} surfaces to create .outer field (it may take time)
+%                 DEFAULT: []
+%
+%
 % .smooth [1x1] # of iterations of smoothing
 %
 % [OUTPUT]
@@ -48,6 +52,7 @@ if ~nargin
   help(mfilename)
   return
 end
+myfs_addpath()
 
 if exist('subjects_dir','var') && ~isempty(subjects_dir)
   setenv('SUBJECTS_DIR',subjects_dir);
@@ -76,6 +81,9 @@ if ~isfield(cfg,'annot')
 end
 if ~isfield(cfg,'isocurv')
   cfg.isocurv = {};
+end
+if ~isfield(cfg,'outerbnd')
+  cfg.outerbnd = {};
 end
 if ~isfield(cfg,'smooth')
   cfg.smooth = 0;
@@ -162,12 +170,21 @@ end
 
 %% ADD isocurvature
 for isurf = 1:numel(cfg.isocurv)
-  addpath(fullfile(fileparts(mfilename('fullpath')),'external'))
   surfname = cfg.isocurv{isurf};
   for ihemi = 1:2
     [~, C] = tricontourfast(...
       surfs.(surfname){ihemi}, surfs.curv{ihemi}, 0, false);
     surfs.(surfname){ihemi}.isocurv = C.group;
+  end
+end
+
+
+%% ADD outer boundaries
+for isurf = 1:numel(cfg.outerbnd)
+  surfname = cfg.outerbnd{isurf};
+  for ihemi = 1:2
+    [C] = triouterboundary(surfs.(surfname){ihemi});
+    surfs.(surfname){ihemi}.outerboundary = C.group;
   end
 end
 
