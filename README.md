@@ -1,6 +1,6 @@
 # surfviz
 
-MATLAB codes for visualization of surface-mapped scalar values. Largely inspired by visualization functions in `CAT12` (http://www.neuro.uni-jena.de/cat/) but more useful in serial/parallel batch processing (i.e., no user-interaction required).
+MATLAB scripts for visualization of surface-mapped scalar values. Largely inspired by visualization functions in `CAT12` (http://www.neuro.uni-jena.de/cat/) but more useful in serial/parallel batch processing (i.e., no user-interaction required).
 
 ## Features
 - Various FreeSurfer (http://freesurfer.net/) surface models (white, pial, inflated, semi-inflated, sphere) can be used. 
@@ -25,15 +25,15 @@ fsss_view(surfs, surfs.THNS) % for example, thickness, areas, white/pial curvatu
 
 You can also set the surface to visualize, layout, and a threshold via `cfg` structure:
 ```Matlab
-cfg = struct('basesurf','PIAL', 'layout','1x2', 'thres',3); % just an arbitrary threshold for demo
-fsss_view(surfs, surfs.THNS, cfg)
+cfg = struct('basesurf','pial', 'layout','1x2', 'thres',3); % just an arbitrary threshold for demo
+fsss_view(surfs, surfs.thns, cfg)
 ```
 ![](https://github.com/solleo/surfviz/blob/master/images/demo2.2.png)
 
 ... and some captions and colorschemes: 
 ```Matlab
-thns_z = {zscore(surfs.THNS{1}), zscore(surfs.THNS{2})};
-cfg = struct('basesurf','INFL', 'layout','2x2', 'thres',1, ...
+thns_z = {zscore(surfs.thns{1}), zscore(surfs.thns{2})};
+cfg = struct('basesurf','inflated', 'layout','2x2', 'thres',1, ...
   'colorbartitle','Rel. Ctx. Thns.', 'colorbarxlabel','Z-score', ...
   'colorscheme','yellowblue');
 fsss_view(surfs, thns_z, cfg)
@@ -49,8 +49,8 @@ ls('demo.png') % check the file was created!
 (NEW) With an edge-connecting algorithm, isocontours can be plotted very quickly (0.07 sec per 160k-vert surface). Isocurvature can be very useful for unthresholded maps to mark the boundary between gyri and sulci. Any arbitrary contours (significant clusters, manual/atals-based ROIs) can be also overlaid:
 ```Matlab
 subdir = fullfile(getenv('FREESURFER_HOME'),'subjects'); % Find FREESURFER default subject directory
-surfs = fsss_read_all_FS_surfs('fsaverage',subdir, struct('isocurv','INFL')); % Computes isocurvature line groups when loading
-fsss_view(surfs, surfs.THNS)
+surfs = fsss_read_all_FS_surfs('fsaverage',subdir, struct('isocurv','inflated')); % Computes isocurvature line groups when loading
+fsss_view(surfs, surfs.thns)
 ```
 ![](https://github.com/solleo/surfviz/blob/master/images/demo5.png)
 
@@ -61,7 +61,7 @@ labels = {}; cots = {};
 [~, labels{1}, cots{1}] = read_annotation('lh.HCP-MMP1.annot', 0);
 [~, labels{2}, cots{2}] = read_annotation('rh.HCP-MMP1.annot', 0);
 [fsavg,cots] = fsss_isoclus(fsavg, labels, struct('cots',{cots})); % this takes a while for granular annotations
-fsss_view(fsavg, fsavg.THNS, struct('colormap',gray, 'isocluslinewidth',1,'isocluscolors',cots)
+fsss_view(fsavg, fsavg.thns, struct('colormap',gray, 'isocluslinewidth',1,'isocluscolors',cots)
 ```
 ![](https://github.com/solleo/surfviz/blob/master/images/demo6.png)
 
