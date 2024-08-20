@@ -70,4 +70,12 @@ See documentation for more information:
 doc fsss_view
 ```
 
-(cc) Seung-Goo Kim, 2019-2020.
+## Publications
+The current or previous version of this repo has been used in these publications:
+- [Kim et al., 2024, Cerebral Cortex](https://doi.org/10.1093/cercor/bhae155)
+- [Weidacker, Kim et al., 2020, Psychological Medicine](https://doi.rog/10.1017/S0033291720003852)
+- [Kim, Overath et al., 2022, NeuroImage](https://doi.org/10.1016/j.neuroimage.2022.118879)
+- [Nord, Kim et al., 2019, Neuropsychopharmacology](https://doi.org/10.1038/s41386-019-0343-6)
+- [Zhang et al., 2019, Brain Stimulation](https://doi.org/10.1016/j.brs.2019.05.010)
+
+(cc) Seung-Goo Kim, 2019-2024.
